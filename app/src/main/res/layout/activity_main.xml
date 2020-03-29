@@ -16,7 +16,179 @@
             android:layout_height="185dp"
             android:background="@color/viewColor"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/profile_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="@string/description"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_oval="true" />
+
+        <TextView
+            android:id="@+id/profile_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="34dp"
+            android:text="Tony Gabriel"
+            android:textAppearance="@style/profile_name_text"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/profile_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:paddingTop="5dp"
+            android:text="@string/status"
+            android:textAppearance="@style/health_status_text"
+            app:layout_constraintStart_toEndOf="@+id/profile_image"
+            app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+
+        <TextView
+            android:id="@+id/health_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:paddingTop="5dp"
+            android:text="Healthy"
+            android:textAppearance="@style/health_status_text"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="328dp"
+            android:layout_marginTop="30dp"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/health_status">
+
+
+        </androidx.cardview.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+            <Button
+                android:id="@+id/button_test"
+                android:layout_width="145dp"
+                android:layout_height="132dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="35dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/menu_background"
+                android:drawableTop="@drawable/ic_test"
+                android:elevation="5dp"
+                android:padding="15dp"
+                android:text="@string/self_test"
+                android:textAlignment="center"
+                android:textAppearance="@style/menu_text_main" />
+
+            <Button
+                android:id="@+id/button_report"
+                android:layout_width="145dp"
+                android:layout_height="132dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="35dp"
+                android:background="@drawable/menu_background_dark"
+                android:drawableTop="@drawable/ic_report"
+                android:elevation="5dp"
+                android:padding="15dp"
+                android:text="@string/report_a_case"
+                android:textAlignment="center"
+                android:textColor="@color/colorFillLight"
+                android:textAppearance="@style/menu_text_main" />
+
+            <Button
+                android:id="@+id/button_symptoms"
+                android:layout_width="145dp"
+                android:layout_height="132dp"
+                android:layout_below="@id/button_test"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="35dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/menu_background"
+                android:drawableTop="@drawable/ic_symptoms"
+                android:elevation="5dp"
+                android:padding="15dp"
+                android:text="@string/virus_symptoms"
+                android:textAlignment="center"
+                android:textAppearance="@style/menu_text_main" />
+
+            <Button
+                android:id="@+id/button_precautions"
+                android:layout_width="145dp"
+                android:layout_height="132dp"
+                android:layout_below="@id/button_report"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="35dp"
+                android:background="@drawable/menu_background"
+                android:drawableTop="@drawable/ic_precautions"
+                android:elevation="5dp"
+                android:padding="15dp"
+                android:text="@string/precautions"
+                android:textAlignment="center"
+                android:textAppearance="@style/menu_text_main" />
+
+            <Button
+                android:id="@+id/button_news"
+                android:layout_width="145dp"
+                android:layout_height="132dp"
+                android:layout_below="@id/button_symptoms"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="35dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/menu_background"
+                android:drawableTop="@drawable/ic_news"
+                android:elevation="5dp"
+                android:padding="15dp"
+                android:text="@string/news_update"
+                android:textAlignment="center"
+                android:textAppearance="@style/menu_text_main" />
+
+            <Button
+                android:id="@+id/button_movement"
+                android:layout_width="145dp"
+                android:layout_height="132dp"
+                android:layout_below="@id/button_precautions"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="35dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/menu_background"
+                android:drawableTop="@drawable/ic_location"
+                android:elevation="5dp"
+                android:padding="15dp"
+                android:text="@string/movement_history"
+                android:textAlignment="center"
+                android:textAppearance="@style/menu_text_main" />
+
+        </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

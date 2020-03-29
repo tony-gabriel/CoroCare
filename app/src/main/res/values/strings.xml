@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Corona Help App</string>
+    <string name="description">profile image</string>
+    <string name="status">Status:</string>
+    <string name="menuDescription">menu image</string>
+    <string name="self_test">Self Test</string>
+    <string name="report_a_case">Report a case</string>
+    <string name="virus_symptoms">Virus Symptoms</string>
+    <string name="precautions">Precautions</string>
+    <string name="news_update">News Update</string>
+    <string name="movement_history">Movement History</string>
+    <string name="instructions">Instructions</string>
+
+    <string name="text_sample">
+        Excepteur sint officia fugiat laboris voluptate pariatur. Ex voluptate cupidatat est laborum et non commodo. Officia fugiat nisi consequat occaecat eu. Eiusmod labore sint consequat consectetur sunt id exercitation officia aliquip adipisicing nulla. Aute cupidatat consectetur nulla anim dolore elit minim cillum. Esse ex et fugiat ullamco irure aliquip elit ut magna adipisicing.
+</string>
+    <string name="start_test">Start Test</string>
+    <string name="title_activity_location_history">Map</string>
+    <string name="location_history">Location History</string>
+    <string name="welcome_to_coro">Welcome to Coro</string>
+    <string name="care">Care</string>
 </resources>
