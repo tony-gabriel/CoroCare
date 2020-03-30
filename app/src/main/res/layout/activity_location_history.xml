@@ -40,15 +40,23 @@
     </RelativeLayout>
 
 
+    <RelativeLayout
+        android:id="@id/view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        map:layout_constraintTop_toBottomOf="@id/relative"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent">
+
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="562dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toBottomOf="@+id/relative" />
+         />
+
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

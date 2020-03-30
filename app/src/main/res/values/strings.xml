@@ -19,4 +19,10 @@
     <string name="location_history">Location History</string>
     <string name="welcome_to_coro">Welcome to Coro</string>
     <string name="care">Care</string>
+    <string name="enter_your_fullname">Enter Your Fullname</string>
+    <string name="enter_your_phone_number">Enter Your Phone Number</string>
+    <string name="gender">Gender:</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="text_continue">Continue</string>
 </resources>
