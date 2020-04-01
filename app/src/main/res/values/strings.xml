@@ -25,4 +25,10 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="text_continue">Continue</string>
+    <string name="not_home">No maybe later</string>
+    <string name="are_you_at_home">Are you at home?</string>
+    <string name="upload_a_profile_picture">Upload a profile picture</string>
+    <string name="coro">Coro</string>
+    <string name="news">News</string>
+    <string name="symptoms">Symptoms</string>
 </resources>

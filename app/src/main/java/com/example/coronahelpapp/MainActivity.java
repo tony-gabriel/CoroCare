@@ -1,8 +1,7 @@
 package com.example.coronahelpapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     Button Test, Report, Symptoms, Precautions, News, Movement;
     ImageView profileImage;
     TextView profileName, status;
+    ConstraintLayout profileContainer;
 
 
     @Override
@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         News = findViewById(R.id.button_news);
         Movement = findViewById(R.id.button_movement);
 
+        profileContainer = findViewById(R.id.profile_container);
+
         Test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
         Report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                startActivity(new Intent(MainActivity.this, Report.class));
 
             }
         });
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         Symptoms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Symptoms.class));
 
             }
         });
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         Precautions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Precaution.class));
 
             }
         });
@@ -68,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         News.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                startActivity(new Intent(MainActivity.this, News.class));
 
             }
         });
@@ -77,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, LocationHistory.class));
 
+            }
+        });
+
+        profileContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(MainActivity.this, ProfileImageReg.class));
             }
         });
 

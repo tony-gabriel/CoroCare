@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileImageReg">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:background="@drawable/bg"
+            android:backgroundTint="@color/viewColor3"
+            android:backgroundTintMode="src_atop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="76dp"
+            android:text="@string/welcome_to_coro"
+            android:textAllCaps="true"
+            android:textAppearance="@style/pageTitle_text_2"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@id/view"
+            app:layout_constraintStart_toStartOf="@+id/view"
+            app:layout_constraintTop_toTopOf="@id/view" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/care"
+            android:textAllCaps="true"
+            android:textAppearance="@style/pageTitle_text"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/view"
+            app:layout_constraintStart_toEndOf="@+id/textView4"
+            app:layout_constraintTop_toTopOf="@id/view" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/cornered_layout"
+            android:layout_marginTop="65dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView4" >
+
+            <TextView
+                android:id="@+id/text8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColor="#000000"
+                android:text="@string/upload_a_profile_picture"
+                android:textSize="12sp"
+                android:fontFamily="@font/poppins_light"
+                android:layout_marginTop="47dp" />
+
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/profile_main"
+                android:layout_width="111dp"
+                android:layout_height="111dp"
+                android:layout_below="@+id/text8"
+                android:layout_marginTop="13dp"
+                android:contentDescription="@string/app_name"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_launcher"
+                app:riv_oval="true"/>
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/getImage"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_below="@+id/text8"
+                android:layout_marginTop="80dp"
+                android:layout_marginStart="-25dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_camera"
+                android:layout_toEndOf="@id/profile_main"
+                app:riv_oval="true"
+                android:clickable="true"/>
+
+
+            <Button
+                android:id="@+id/saveImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_main"
+                android:layout_marginTop="36dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="45dp"
+                android:layout_marginBottom="45dp"
+                android:background="@drawable/btn_dark_bg"
+                android:fontFamily="@font/poppins"
+                android:text="@string/text_continue"
+                android:textColor="@color/colorFillLight"
+                android:textSize="12sp"/>
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

@@ -14,7 +14,9 @@
             android:id="@+id/view"
             android:layout_width="0dp"
             android:layout_height="250dp"
-            android:background="@color/viewColor2"
+            android:background="@drawable/bg"
+            android:backgroundTint="@color/viewColor3"
+            android:backgroundTintMode="src_atop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +49,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/cornered_layout"
             android:layout_marginTop="65dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -124,19 +126,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text7"
-                android:layout_toEndOf="@id/radioButtonMale"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="11dp"
-                android:text="@string/female"
-                android:textSize="12dp"
+                android:layout_toEndOf="@id/radioButtonMale"
                 android:fontFamily="@font/poppins_light"
-                />
+                android:text="@string/female"
+                android:textSize="12sp" />
 
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/radioButtonFemale"
+                android:layout_below="@id/radioButtonNotHome"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="30dp"
@@ -144,6 +145,43 @@
                 android:fontFamily="@font/poppins"
                 android:text="@string/text_continue"
                 android:textColor="@color/colorFillLight" />
+
+
+            <TextView
+                android:id="@+id/text8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gender"
+                android:textSize="12sp"
+                android:fontFamily="@font/poppins_light"
+                android:layout_below="@+id/radioButtonMale"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="24dp" />
+
+            <RadioButton
+                android:id="@+id/radioButtonHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text8"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="11dp"
+                android:fontFamily="@font/poppins_light"
+                android:text="@string/are_you_at_home"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/radioButtonNotHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text8"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="11dp"
+                android:layout_toEndOf="@id/radioButtonHome"
+                android:fontFamily="@font/poppins_light"
+                android:text="@string/not_home"
+                android:textSize="12sp" />
         </RelativeLayout>
 
 

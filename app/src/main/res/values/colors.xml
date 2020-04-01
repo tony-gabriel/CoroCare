@@ -5,7 +5,8 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="viewColor">#5A7BEF</color>
-    <color name="viewColor2">#5A7BEF</color>
+    <color name="viewColor2">#DC5C7EF5</color>
+    <color name="viewColor3">#C85C7EF5</color>
     <color name="menuBackColor">#A7B5FF</color>
     <color name="colorFillLight">#FFFFFF</color>
     <color name="btnFillDark">#CF5A7BEF</color>
