@@ -77,6 +77,7 @@
                 android:contentDescription="@string/app_name"
                 android:layout_centerHorizontal="true"
                 android:src="@mipmap/ic_launcher"
+                android:scaleType="centerCrop"
                 app:riv_oval="true"/>
 
             <com.makeramen.roundedimageview.RoundedImageView
