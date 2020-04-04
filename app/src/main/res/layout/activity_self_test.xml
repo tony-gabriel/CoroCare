@@ -86,7 +86,7 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="80dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@color/btnFillDark"
+                    android:background="@drawable/btn_dark_bg"
                     android:text="@string/start_test"
                     android:textAppearance="@style/btn_text"
                     android:textColor="@color/colorFillLight"
