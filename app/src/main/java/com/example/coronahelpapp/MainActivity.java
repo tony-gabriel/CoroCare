@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class MainActivity extends AppCompatActivity {
 
     Button Test, Report, Symptoms, Precautions, News, Movement;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     LocationManager locationManager;
     LocationListener locationListener;
+    Location userLocation;
 
     private final long Min_Time = 10000;
     private final long Min_Dist = 10;
@@ -146,6 +149,10 @@ public class MainActivity extends AppCompatActivity {
        locationListener = new LocationListener() {
            @Override
            public void onLocationChanged(Location location) {
+
+               userLocation = location;
+
+               LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                // TODO: Get the Latitude and Longitude and send to database
 
