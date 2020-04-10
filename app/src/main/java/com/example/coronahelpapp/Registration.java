@@ -21,8 +21,10 @@ public class Registration extends AppCompatActivity {
     RadioButton rbtFemale;
     RadioButton rbtHome;
     RadioButton rbtAway;
-    DatabaseReference dbreference;
-    UserData userData;
+    DatabaseReference mDatabase;
+    String health = "healthy";
+    public  String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +34,10 @@ public class Registration extends AppCompatActivity {
         fullname = findViewById(R.id.fullname);
         mobile = findViewById(R.id.mobile);
         proceed = findViewById(R.id.proceed);
-        userData = new UserData();
-        dbreference = FirebaseDatabase.getInstance().getReference().child("UserData");
+       // userData = new UserData();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("users");
+
+
 
 
         proceed.setOnClickListener(new View.OnClickListener() {
@@ -42,6 +46,7 @@ public class Registration extends AppCompatActivity {
 
                 String username = fullname.getText().toString();
                 String mobileNumber = mobile.getText().toString();
+                String health="healthy";
 
 
                 if (username.isEmpty()) {
@@ -58,11 +63,10 @@ public class Registration extends AppCompatActivity {
 
                 }
 
-                userData.setFullname(username);
-                userData.setPhone(mobileNumber);
-                userData.setHealth("healthy");
-                dbreference.push().setValue(userData);
+                 userId = mDatabase.push().getKey();
 
+             UserData user =new UserData(username,mobileNumber, health);
+                mDatabase.child(userId).setValue(user);
 
                 Intent intent = new Intent(Registration.this, ProfileImageReg.class);
                 startActivity(intent);
