@@ -4,8 +4,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,5 +49,10 @@ public class LocationHistory extends FragmentActivity implements OnMapReadyCallb
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
+    }
+
+    public void back(View view) {
+        Intent intents= new Intent(LocationHistory.this, MainActivity.class );
+        startActivity(intents);
     }
 }
