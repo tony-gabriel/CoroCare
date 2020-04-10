@@ -68,8 +68,6 @@ public class ProfileImageReg extends AppCompatActivity {
             public void onClick(View v) {
 
                 uploadImage();
-
-                // TODO: set Firebase codes here
             }
         });
     }

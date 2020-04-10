@@ -66,6 +66,38 @@
         Why? You have a higher chance of catching COVID-19 in one of these areas.
 
     </string>
+    <string name="report_string">Please select your state below to reach NCDC nearest to you</string>
+
+    <string name="state_prompt">Select your state</string>
+    <string name="state_prompt2">Select a number to call</string>
+
+    <string-array name="state_arrays">
+        <item>NCDC (National)</item>
+        <item>Akwa Ibom</item>
+        <item>Anambra</item>
+        <item>Bayelsa</item>
+        <item>Bauchi</item>
+        <item>Cross River</item>
+        <item>Delta</item>
+        <item>Enugu</item>
+        <item>Ekiti</item>
+        <item>Edo</item>
+        <item>FCT</item>
+        <item>Imo</item>
+        <item>Kano</item>
+        <item>Kaduna</item>
+        <item>Lagos</item>
+        <item>Niger</item>
+        <item>Osun</item>
+        <item>Ogun</item>
+        <item>Ondo</item>
+        <item>Oyo</item>
+        <item>Plateau</item>
+        <item>Rivers</item>
+        <item>Sokoto</item>
+        <item>Yobe</item>
+        <item>Zamfara</item>
+    </string-array>
 
 
 </resources>
