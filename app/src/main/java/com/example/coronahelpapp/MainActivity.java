@@ -2,10 +2,18 @@ package com.example.coronahelpapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +39,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class MainActivity extends AppCompatActivity {
     public String url="https://corona.lmao.ninja/countries/NGA";
 
@@ -39,6 +49,14 @@ public class MainActivity extends AppCompatActivity {
     TextView profileName, status, Coronadata, CoronaActive, CoronaRecovered, CoronaCritical;
     DatabaseReference mDataBase;
     UserData userData;
+
+
+    LocationManager locationManager;
+    LocationListener locationListener;
+    Location userLocation;
+
+    private final long Min_Time = 10000;
+    private final long Min_Dist = 10;
 
 
 
@@ -74,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         Precautions = findViewById(R.id.button_precautions);
         News = findViewById(R.id.button_news);
         Movement = findViewById(R.id.button_movement);
+
 
         Test.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,5 +200,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void MovementHistory() {
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PackageManager.PERMISSION_GRANTED);
+        }
+
+
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        try {
+
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,Min_Time, Min_Dist, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,Min_Time, Min_Dist, locationListener);
+
+        } catch (Exception e){
+
+            e.printStackTrace();
+        }
+
+
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+                userLocation = location;
+
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                // TODO: Get the Latitude and Longitude and send to database
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+
+    }
 }
