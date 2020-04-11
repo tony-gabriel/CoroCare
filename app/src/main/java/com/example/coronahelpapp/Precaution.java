@@ -18,6 +18,6 @@ public class Precaution extends AppCompatActivity {
 
         Intent intent=new Intent (Precaution.this, MainActivity.class);
         startActivity(intent);
-
+        finish();
     }
 }

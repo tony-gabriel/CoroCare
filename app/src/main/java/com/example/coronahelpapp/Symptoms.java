@@ -15,9 +15,8 @@ public class Symptoms extends AppCompatActivity {
     }
 
     public void goBack(View view) {
-
         Intent intent=new Intent (Symptoms.this, MainActivity.class);
         startActivity(intent);
-
+        finish();
     }
 }
