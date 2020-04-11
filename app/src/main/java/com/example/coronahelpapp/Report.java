@@ -22,6 +22,7 @@ public class Report extends AppCompatActivity {
             "Bauchi", "Cross River", "Delta", "Enugu", "Ekiti", "Edo", "FCT", "Imo", "Kano", "Kaduna",
             "Lagos", "Niger", "Osun", "Ogun", "Ondo", "Oyo", "Plateau", "Rivers", "Sokoto", "Yobe", "Zamfara"};
 
+    final String[] blank = {""};
     final String[] ncdc = {"08009700010"};
     final String[] akwa = {"08028442194", "08037934966", "09023330092"};
     final String[] anambra = {"08145434416"};
@@ -74,6 +75,13 @@ public class Report extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 switch (position) {
+
+                    case 0:
+                        final ArrayAdapter<String> blankAdp;
+                        blankAdp = new ArrayAdapter<>
+                                (Report.this, android.R.layout.simple_spinner_dropdown_item, blank);
+                        numbers.setAdapter(blankAdp);
+                        break;
 
                     case 1:
                         final ArrayAdapter<String> ncdcAdp;
