@@ -2,8 +2,12 @@ package com.example.coronahelpapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+
+import java.util.Calendar;
 
 public class Splash extends AppCompatActivity {
 
@@ -29,7 +33,9 @@ public class Splash extends AppCompatActivity {
 
                 finally
                 {
-                    Intent intent = new Intent(Splash.this, Registration.class);
+                    setAlarm();
+                    Intent intent = new Intent(Splash.this, MainActivity.class);
+
                     startActivity(intent);
                 }
             }
@@ -44,4 +50,20 @@ public class Splash extends AppCompatActivity {
 
         finish();
     }
+
+    private void setAlarm() {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,07);
+        calendar.set(Calendar.MINUTE,30);
+        calendar.set(Calendar.SECOND,00);
+
+        Intent intent = new Intent (getApplicationContext(), Notification_Receiver.class);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),100,intent ,PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,pendingIntent);
+
+    }
+
 }

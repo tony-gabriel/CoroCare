@@ -8,15 +8,33 @@ import android.view.View;
 
 public class SelfTest extends AppCompatActivity {
 
+    String[] question;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_self_test);
+
+
+        String [] question = new String[4];
+
+
+
     }
 
     public void back(View view) {
         Intent intent=new Intent (this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void valNo(View view) {
+        question [0]="no";
+
+    }
+
+    public void Valyes(View view) {
+
+        question [0]= "no";
     }
 }
