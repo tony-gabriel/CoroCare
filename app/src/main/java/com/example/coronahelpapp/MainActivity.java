@@ -3,7 +3,6 @@ package com.example.coronahelpapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -19,7 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,7 +25,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button Test, Report, Symptoms, Precautions, News, Movement;
     ImageView profileImage;
-    TextView profileName, status, Coronadata, CoronaActive, CoronaRecovered, CoronaCritical;
+    TextView profileName, status, CoronaData, CoronaActive, CoronaRecovered, CoronaCritical;
     DatabaseReference mDataBase;
     UserData userData;
 
@@ -77,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Coronadata=findViewById(R.id.CoronaData);
+        CoronaData =findViewById(R.id.CoronaData);
         CoronaActive=findViewById(R.id.CoronaActive);
         CoronaRecovered=findViewById(R.id.CoronaRecovered);
         CoronaCritical=findViewById(R.id.CoronaCritical);
@@ -93,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         News = findViewById(R.id.button_news);
         Movement = findViewById(R.id.button_movement);
 
+        MovementHistory();
+
 
         Test.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,15 +103,14 @@ public class MainActivity extends AppCompatActivity {
         Report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
+                startActivity(new Intent(MainActivity.this, Report.class));
             }
         });
 
         Symptoms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Symptoms.class));
 
             }
         });
@@ -120,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         Precautions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Precaution.class));
 
             }
         });
@@ -127,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         News.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, News.class));
 
             }
         });
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             JSONObject jsonObject = new JSONObject(myResponse);
-                            Coronadata.setText("Total Cases: "  +jsonObject.getString("cases"));
+                            CoronaData.setText("Total Cases: "  +jsonObject.getString("cases"));
                             CoronaActive.setText("Active Cases: "+jsonObject.getString("active") );
                             CoronaCritical.setText("Critical Case: " + jsonObject.getString("critical"));
                             CoronaRecovered.setText(" Total Recovered  : " + jsonObject.getString("recovered"));

@@ -74,7 +74,8 @@
                     android:drawableStart="@drawable/ic_name"
                     android:drawablePadding="10dp"
                     android:hint="@string/enter_your_fullname"
-                    android:fontFamily="@font/poppins_light"/>
+                    android:fontFamily="@font/poppins_light"
+                    android:inputType="textPersonName"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -97,7 +98,7 @@
                     android:drawableStart="@drawable/ic_phone"
                     android:drawablePadding="10dp"
                     android:hint="@string/enter_your_phone_number"
-                    android:fontFamily="@font/poppins_light"/>
+                    android:fontFamily="@font/poppins_light" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView

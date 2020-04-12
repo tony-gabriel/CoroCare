@@ -66,6 +66,10 @@
         Why? You have a higher chance of catching COVID-19 in one of these areas.
 
     </string>
+    <string name="report_string">Please select your state and a number below to reach NCDC office nearest to you</string>
+
+    <string name="state_prompt">Select your state</string>
+    <string name="state_prompt2">Select a number to call</string>
 
 
 </resources>

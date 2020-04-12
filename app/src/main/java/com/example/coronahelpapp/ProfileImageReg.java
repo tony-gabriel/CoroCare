@@ -68,8 +68,6 @@ public class ProfileImageReg extends AppCompatActivity {
             public void onClick(View v) {
 
                 uploadImage();
-
-                // TODO: set Firebase codes here
             }
         });
     }
@@ -92,6 +90,7 @@ public class ProfileImageReg extends AppCompatActivity {
                             Toast.makeText(ProfileImageReg.this, "Uploaded", Toast.LENGTH_SHORT).show();
                             Intent intents = new Intent (ProfileImageReg.this, MainActivity.class);
                             startActivity(intents);
+                            finish();
 
                         }
                     })
