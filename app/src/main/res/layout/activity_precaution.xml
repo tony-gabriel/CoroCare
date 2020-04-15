@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Precaution" >
+    tools:context=".Precaution">
 
     <View
         android:id="@+id/view"
@@ -18,12 +18,12 @@
 
     <ImageView
         android:id="@+id/imageBack"
-        android:onClick="imageBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="20dp"
         android:contentDescription="@string/app_name"
+        android:onClick="imageBack"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_back" />
@@ -60,7 +60,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
@@ -71,7 +71,7 @@
                 android:padding="5dp"
                 android:text="@string/precaution_1"
                 android:textAlignment="center"
-                android:textAppearance="@style/body_text"/>
+                android:textAppearance="@style/body_text" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -81,7 +81,7 @@
                 android:padding="5dp"
                 android:text="@string/precaution_2"
                 android:textAlignment="center"
-                android:textAppearance="@style/body_text"/>
+                android:textAppearance="@style/body_text" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -91,7 +91,7 @@
                 android:padding="5dp"
                 android:text="@string/precaution_3"
                 android:textAlignment="center"
-                android:textAppearance="@style/body_text"/>
+                android:textAppearance="@style/body_text" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -101,7 +101,7 @@
                 android:padding="5dp"
                 android:text="@string/precaution_4"
                 android:textAlignment="center"
-                android:textAppearance="@style/body_text"/>
+                android:textAppearance="@style/body_text" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -111,7 +111,7 @@
                 android:padding="5dp"
                 android:text="@string/precaution_5"
                 android:textAlignment="center"
-                android:textAppearance="@style/body_text"/>
+                android:textAppearance="@style/body_text" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -121,7 +121,7 @@
                 android:padding="5dp"
                 android:text="@string/precaution_6"
                 android:textAlignment="center"
-                android:textAppearance="@style/body_text"/>
+                android:textAppearance="@style/body_text" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
