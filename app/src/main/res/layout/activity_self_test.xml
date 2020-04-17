@@ -57,6 +57,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textView">
 
+            <TextView
+                android:id="@+id/test_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:padding="5dp"
+                android:text="@string/test_count"
+                android:textAppearance="@style/body_text"
+                android:textSize="15sp"
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/test_count"

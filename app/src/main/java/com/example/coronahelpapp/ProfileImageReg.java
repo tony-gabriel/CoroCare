@@ -18,6 +18,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -37,6 +41,9 @@ public class ProfileImageReg extends AppCompatActivity {
     RoundedImageView getImage, profileImage;
     Button saveProfile;
     private Uri filePath;
+    DatabaseReference mDataBase;
+    FirebaseUser user;
+    String uid;
 
     public static final int PICK_IMAGE = 1;
 
@@ -46,6 +53,10 @@ public class ProfileImageReg extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        uid = user.getUid();
+        mDataBase = FirebaseDatabase.getInstance().getReference().child("Users");
+
 
         getImage = findViewById(R.id.getImage);
         profileImage = findViewById(R.id.profile_main);
@@ -74,21 +85,33 @@ public class ProfileImageReg extends AppCompatActivity {
 
     private void uploadImage() {
 
-        if(filePath != null)
-        {
+        if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+            final StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
             ref.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
+                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+
+                                    String imageLink = uri.toString();
+
+                                    mDataBase.child(uid).child("ImageUri").setValue(imageLink);
+
+
+                                }
+                            });
+
                             progressDialog.dismiss();
                             Toast.makeText(ProfileImageReg.this, "Uploaded", Toast.LENGTH_SHORT).show();
-                            Intent intents = new Intent (ProfileImageReg.this, MainActivity.class);
+                            Intent intents = new Intent(ProfileImageReg.this, MainActivity.class);
                             startActivity(intents);
                             finish();
 
@@ -98,40 +121,36 @@ public class ProfileImageReg extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(ProfileImageReg.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileImageReg.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                     .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
                         }
                     });
         }
     }
 
 
-
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
 
-            filePath=data.getData();
+            filePath = data.getData();
 
             {
                 filePath = data.getData();
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                     profileImage.setImageBitmap(bitmap);
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+        }
     }
-}}
+}

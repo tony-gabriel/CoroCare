@@ -7,6 +7,7 @@
          location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.CALL_PHONE"/>
@@ -20,13 +21,18 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".Splash">
 
- <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+
         </activity>
         <activity android:name=".Registration">
+
+
 
         </activity>
         <!--
@@ -44,8 +50,13 @@
         <activity
             android:name=".LocationHistory"
             android:label="@string/title_activity_location_history" />
-        <activity android:name=".SelfTest" />
+        <activity android:name=".SelfTest" >
+
+
+
+        </activity>
         <activity android:name=".MainActivity">
+
 
         </activity>
         <activity android:name=".ProfileImageReg" />

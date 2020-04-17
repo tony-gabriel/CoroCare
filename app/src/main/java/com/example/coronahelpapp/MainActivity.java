@@ -18,7 +18,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,16 +40,17 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
-    public String url = "https://corona.lmao.ninja/countries/NGA";
-
+    public String url = "https://corona.lmao.ninja/v2/countries/NGA";
     Button Test, Report, Symptoms, Precautions, News, Movement;
     ImageView profileImage;
     TextView profileName, status, CoronaData, CoronaActive, CoronaRecovered, CoronaCritical;
     DatabaseReference mDataBase;
-    UserData userData;
-
+    FirebaseUser firebaseUser;
+    String uid;
+    public String User_Status;
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -60,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        userData = new UserData();
-        mDataBase = FirebaseDatabase.getInstance().getReference().child("users");
-
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        mDataBase = FirebaseDatabase.getInstance().getReference().child("Users");
+        uid = firebaseUser.getUid();
 
         try {
             run();
@@ -136,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     void run() throws IOException {
@@ -149,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                call.cancel();
+                call.clone();
             }
 
             @Override
@@ -166,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(myResponse);
                             CoronaData.setText("Total Cases: " + jsonObject.getString("cases"));
                             CoronaActive.setText("Active Cases: " + jsonObject.getString("active"));
-                            CoronaCritical.setText("Critical Case: " + jsonObject.getString("critical"));
+                            CoronaCritical.setText("Total Deaths:  " + jsonObject.getString("deaths"));
                             CoronaRecovered.setText(" Total Recovered  : " + jsonObject.getString("recovered"));
 
 
@@ -180,11 +185,29 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
-        mDataBase.child("users").addValueEventListener(new ValueEventListener() {
+        mDataBase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                UserData user = dataSnapshot.getValue(UserData.class);
-                profileName.setText("Hello " + user);
+                String User_name = dataSnapshot.child(uid).child("User_Name").getValue(String.class);
+                String User_Status = dataSnapshot.child(uid).child("Health_Status").getValue(String.class);
+                String User_pics = dataSnapshot.child(uid).child("ImageUri").getValue(String.class);
+
+                profileName.setText("Hello " + User_name);
+                status.setText(User_Status);
+                Picasso.get().load(User_pics).error(R.drawable.bg).into(profileImage, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Toast.makeText(getApplicationContext(), "An error occurred", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+
             }
 
             @Override
