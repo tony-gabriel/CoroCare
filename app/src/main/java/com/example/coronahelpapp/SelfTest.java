@@ -18,6 +18,7 @@ import java.util.List;
 
 public class SelfTest extends AppCompatActivity {
 
+
     LinearLayout starter_layout;
     TextView test_main, test_counter, textDescription, Instruction;
     RadioGroup radioGroup;
@@ -31,10 +32,12 @@ public class SelfTest extends AppCompatActivity {
     private Question currentQuestion;
     private boolean answered, q1, q2, q3, q4, q5, q6, q7, q8;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_self_test);
+
 
         starter_layout = findViewById(R.id.linear_starter);
 
