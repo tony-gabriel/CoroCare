@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -15,15 +16,13 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import static android.graphics.Color.RED;
-
 public class SelfTest extends AppCompatActivity {
 
-    LinearLayout starter_layout, result_layout;
-    TextView test_main, test_counter, resultText;
+    LinearLayout starter_layout;
+    TextView test_main, test_counter, textDescription, Instruction;
     RadioGroup radioGroup;
     RadioButton rbYes, rbNo;
-    Button startCheck, btnNextFinish, btnFinish;
+    Button startCheck, btnNextFinish;
 
     private List<Question> questionList;
 
@@ -38,11 +37,11 @@ public class SelfTest extends AppCompatActivity {
         setContentView(R.layout.activity_self_test);
 
         starter_layout = findViewById(R.id.linear_starter);
-        result_layout.findViewById(R.id.result_layout);
 
         test_main = findViewById(R.id.text_check);
         test_counter = findViewById(R.id.test_count);
-        resultText = findViewById(R.id.result_text);
+        Instruction = findViewById(R.id.textView1);
+        textDescription = findViewById(R.id.textDescription);
 
         radioGroup = findViewById(R.id.radio_group);
         rbYes = findViewById(R.id.radioButtonYes);
@@ -50,7 +49,6 @@ public class SelfTest extends AppCompatActivity {
 
         startCheck = findViewById(R.id.start_check);
         btnNextFinish = findViewById(R.id.btn_NextFinish);
-        btnFinish = findViewById(R.id.btn_finish_test);
 
         TestDbHelper dbHelper = new TestDbHelper(this);
         questionList = dbHelper.getAllQuestions();
@@ -77,12 +75,10 @@ public class SelfTest extends AppCompatActivity {
                 if (!answered) {
                     if (rbYes.isChecked() || rbNo.isChecked()) {
                         CheckAnswer();
+                        ShowNextQuestion();
                     } else {
                         Toast.makeText(SelfTest.this, "Please Select an answer", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-
-                    ShowNextQuestion();
                 }
             }
         });
@@ -104,9 +100,12 @@ public class SelfTest extends AppCompatActivity {
             test_counter.setText("Check: " + questionCounter + "/" + questionCountTotal);
             answered = false;
 
+            if (questionCounter == questionCountTotal) {
+
+                btnNextFinish.setText(getString(R.string.btn_text_finish));
+            }
 
         } else {
-            btnNextFinish.setText("Finish");
             FinishTest();
         }
     }
@@ -116,7 +115,7 @@ public class SelfTest extends AppCompatActivity {
         radioGroup.setVisibility(View.INVISIBLE);
         btnNextFinish.setVisibility(View.INVISIBLE);
         test_counter.setVisibility(View.INVISIBLE);
-        result_layout.setVisibility(View.VISIBLE);
+        starter_layout.setVisibility(View.VISIBLE);
 
 
         if (q1 && q2 && q3 && q4 && !q5) {
@@ -147,7 +146,6 @@ public class SelfTest extends AppCompatActivity {
         RadioButton rbSelected = findViewById(radioGroup.getCheckedRadioButtonId());
         int AnswerNr = radioGroup.indexOfChild(rbSelected) + 1;
 
-        // TODO: Check if AnswerNr is yes or no then log to firebase database
         String dbQuestion = currentQuestion.getQuestion();
         String AnswerNrText;
         String QandA;
@@ -162,6 +160,8 @@ public class SelfTest extends AppCompatActivity {
 
         switch (questionCounter) {
 
+            // TODO: Take all QandA and save on firebase database
+
             case 1:
                 if (AnswerNr == currentQuestion.getAnswerNr1()) {
                     q1 = true;
@@ -170,6 +170,8 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
+
+                Log.i("Result", QandA);
                 break;
 
             case 2:
@@ -180,6 +182,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
+                Log.i("Result", QandA);
                 break;
 
             case 3:
@@ -190,6 +193,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
+                Log.i("Result", QandA);
                 break;
 
             case 4:
@@ -200,6 +204,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
+                Log.i("Result", QandA);
                 break;
 
             case 5:
@@ -210,6 +215,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
+                Log.i("Result", QandA);
                 break;
 
             case 6:
@@ -220,6 +226,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
+                Log.i("Result", QandA);
                 break;
 
             case 7:
@@ -230,6 +237,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
+                Log.i("Result", QandA);
                 break;
 
             case 8:
@@ -240,6 +248,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
+                Log.i("Result", QandA);
                 break;
         }
 
@@ -248,16 +257,17 @@ public class SelfTest extends AppCompatActivity {
 
     private void Positive() {
 
-        resultText.setText("You have possible symptoms of COVID-19. " +
-                "Please press the button below to contact the National Center for Disease Control (NCDC) nearest to you, " +
-                "while observing the standard guideline for self isolation for the safety of people around you.");
+        Instruction.setText(getString(R.string.text_result));
+        textDescription.setTextColor(getColor(R.color.resultTextColor));
+        textDescription.setText(getString(R.string.text_result_positive));
 
-        btnFinish.setText("REPORT");
-        btnFinish.setBackgroundColor(Color.RED);
-        btnFinish.setOnClickListener(new View.OnClickListener() {
+        startCheck.setText(getString(R.string.btn_text_report));
+        startCheck.setBackgroundColor(getColor(R.color.colorAccent));
+        startCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(SelfTest.this, Report.class));
+                finish();
             }
         });
 
@@ -265,11 +275,12 @@ public class SelfTest extends AppCompatActivity {
 
     private void Negative() {
 
-        resultText.setText("You do not need to take a COVID-19 test. " +
-                "Please contact your doctor for medical attention if you are experiencing some of symptoms. " +
-                "Remember to wash your hands and maintain social distancing");
+        Instruction.setText(getString(R.string.text_result));
+        textDescription.setTextColor(getColor(R.color.resultTextColor));
+        textDescription.setText(getString(R.string.text_result_negative));
 
-        btnFinish.setOnClickListener(new View.OnClickListener() {
+        startCheck.setText(getString(R.string.btn_text_finish));
+        startCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
