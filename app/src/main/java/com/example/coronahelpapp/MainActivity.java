@@ -39,7 +39,7 @@ import okhttp3.Response;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends AppCompatActivity {
-    public String url="https://corona.lmao.ninja/countries/NGA";
+    public String url = "https://corona.lmao.ninja/countries/NGA";
 
     Button Test, Report, Symptoms, Precautions, News, Movement;
     ImageView profileImage;
@@ -56,15 +56,12 @@ public class MainActivity extends AppCompatActivity {
     private final long Min_Dist = 10;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        userData =new UserData();
+        userData = new UserData();
         mDataBase = FirebaseDatabase.getInstance().getReference().child("users");
-
-
 
 
         try {
@@ -74,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        CoronaData =findViewById(R.id.CoronaData);
-        CoronaActive=findViewById(R.id.CoronaActive);
-        CoronaRecovered=findViewById(R.id.CoronaRecovered);
-        CoronaCritical=findViewById(R.id.CoronaCritical);
+        CoronaData = findViewById(R.id.CoronaData);
+        CoronaActive = findViewById(R.id.CoronaActive);
+        CoronaRecovered = findViewById(R.id.CoronaRecovered);
+        CoronaCritical = findViewById(R.id.CoronaCritical);
         profileImage = findViewById(R.id.profile_image);
 
         profileName = findViewById(R.id.profile_name);
@@ -167,15 +164,13 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             JSONObject jsonObject = new JSONObject(myResponse);
-                            CoronaData.setText("Total Cases: "  +jsonObject.getString("cases"));
-                            CoronaActive.setText("Active Cases: "+jsonObject.getString("active") );
+                            CoronaData.setText("Total Cases: " + jsonObject.getString("cases"));
+                            CoronaActive.setText("Active Cases: " + jsonObject.getString("active"));
                             CoronaCritical.setText("Critical Case: " + jsonObject.getString("critical"));
                             CoronaRecovered.setText(" Total Recovered  : " + jsonObject.getString("recovered"));
 
 
-
-
-                        } catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -188,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
         mDataBase.child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-              UserData user = dataSnapshot.getValue(UserData.class);
+                UserData user = dataSnapshot.getValue(UserData.class);
                 profileName.setText("Hello " + user);
             }
 
@@ -216,10 +211,10 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,Min_Time, Min_Dist, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,Min_Time, Min_Dist, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Min_Time, Min_Dist, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Min_Time, Min_Dist, locationListener);
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
         }

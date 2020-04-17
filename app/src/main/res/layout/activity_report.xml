@@ -80,8 +80,7 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:prompt="@string/state_prompt"/>
+                android:layout_marginEnd="20dp" />
 
             <Spinner
                 android:id="@+id/spinner_sub"
@@ -89,8 +88,7 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:prompt="@string/state_prompt2"/>
+                android:layout_marginEnd="20dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/floatingActionButton"
