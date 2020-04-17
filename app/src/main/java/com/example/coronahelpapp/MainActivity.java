@@ -44,7 +44,6 @@ import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
     public String url = "https://corona.lmao.ninja/v2/countries/NGA";
-
     Button Test, Report, Symptoms, Precautions, News, Movement;
     ImageView profileImage;
     TextView profileName, status, CoronaData, CoronaActive, CoronaRecovered, CoronaCritical;
@@ -68,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDataBase = FirebaseDatabase.getInstance().getReference().child("Users");
         uid = firebaseUser.getUid();
-
 
         try {
             run();
