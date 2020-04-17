@@ -28,13 +28,5 @@ public class SelfTest extends AppCompatActivity {
         finish();
     }
 
-    public void valNo(View view) {
-        question [0]="no";
 
-    }
-
-    public void Valyes(View view) {
-
-        question [0]= "no";
-    }
 }

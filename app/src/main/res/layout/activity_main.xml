@@ -142,7 +142,7 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="160dp"
                 android:fontFamily="@font/poppins"
-                android:text="Critical Case: "
+                android:text="Total Deaths:"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="20sp" />
 

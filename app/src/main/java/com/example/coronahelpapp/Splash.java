@@ -4,17 +4,30 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
 
 public class Splash extends AppCompatActivity {
 
+    FirebaseAuth mAuth;
+    FirebaseUser firebaseUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        mAuth= FirebaseAuth.getInstance();
+
+        firebaseUser=mAuth.getCurrentUser();
 
         Thread thread = new Thread()
         {
@@ -31,12 +44,23 @@ public class Splash extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+
+
                 finally
                 {
                     setAlarm();
-                    Intent intent = new Intent(Splash.this, MainActivity.class);
 
-                    startActivity(intent);
+                    if (firebaseUser != null){
+                        Intent intent = new Intent(Splash.this, MainActivity.class);
+
+                        startActivity(intent);
+
+                    }else  {
+                        Intent intent = new Intent(Splash.this, Registration.class);
+
+                        startActivity(intent);
+                    }
+
                 }
             }
         };
@@ -59,6 +83,8 @@ public class Splash extends AppCompatActivity {
         calendar.set(Calendar.SECOND,00);
 
         Intent intent = new Intent (getApplicationContext(), Notification_Receiver.class);
+
+
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),100,intent ,PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
