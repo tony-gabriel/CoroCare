@@ -18,7 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class Report extends AppCompatActivity {
 
-    final String[] states = {"<---Select your state--->", "NCDC (National", "Akwa Ibom", "Anambra", "Bayelsa",
+    final String[] states = {"<---Select your state--->", "NCDC (National)", "Akwa Ibom", "Anambra", "Bayelsa",
             "Bauchi", "Cross River", "Delta", "Enugu", "Ekiti", "Edo", "FCT", "Imo", "Kano", "Kaduna",
             "Lagos", "Niger", "Osun", "Ogun", "Ondo", "Oyo", "Plateau", "Rivers", "Sokoto", "Yobe", "Zamfara"};
 
@@ -287,11 +287,11 @@ public class Report extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (callNumber.isEmpty()){
+                if (callNumber.isEmpty()) {
 
                     Toast.makeText(getApplicationContext(),
                             "Please select your state and a number", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
 
                     Intent intent = new Intent(Intent.ACTION_CALL);
                     intent.setData(Uri.parse("tel:" + callNumber));
@@ -309,7 +309,7 @@ public class Report extends AppCompatActivity {
     private void CheckPhonePermission() {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-                != PackageManager.PERMISSION_GRANTED){
+                != PackageManager.PERMISSION_GRANTED) {
 
             requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 10);
         }
@@ -317,7 +317,7 @@ public class Report extends AppCompatActivity {
     }
 
     public void back(View view) {
-        Intent back =new Intent (Report.this, MainActivity.class);
+        Intent back = new Intent(Report.this, MainActivity.class);
         startActivity(back);
         finish();
     }

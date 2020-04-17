@@ -10,5 +10,9 @@
     <color name="menuBackColor">#A7B5FF</color>
     <color name="colorFillLight">#FFFFFF</color>
     <color name="btnFillDark">#CF5A7BEF</color>
+    <color name="resultTextColor">#3F3F3F</color>
+
+
+    494949
 
 </resources>
