@@ -65,7 +65,7 @@ public class TestDbHelper extends SQLiteOpenHelper {
         addQuestion(q4);
         Question q5 = new Question("Can you hold your breath for 10seconds without coughing or feeling severe discomfort?", "Yes", "No", 1, 2);
         addQuestion(q5);
-        Question q6 = new Question("Have you traveled out of Nigeria recently?", "Yes", "No", 1, 2);
+        Question q6 = new Question("Have you traveled out of Nigeria to any of the countries with high case index of COVID-19 recently?", "Yes", "No", 1, 2);
         addQuestion(q6);
         Question q7 = new Question("Have you been in contact with someone with respiratory illness in the past 14 days?", "Yes", "No", 1, 2);
         addQuestion(q7);
