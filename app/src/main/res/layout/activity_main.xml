@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorFillLight"
     tools:context=".MainActivity" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -85,6 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="328dp"
             android:layout_marginTop="30dp"
+            android:background="@color/colorFillLight"
             app:cardCornerRadius="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -146,6 +148,13 @@
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="20sp" />
 
+                <TextView
+                    android:id="@+id/cord"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/location_history"
+                    android:layout_margin="5dp" />
+
             </RelativeLayout>
 
 
@@ -175,7 +184,6 @@
                 android:layout_rowWeight="1"
                 android:background="@drawable/menu_background"
                 android:drawableTop="@drawable/ic_test"
-                android:elevation="5dp"
                 android:padding="15dp"
                 android:text="@string/self_test"
                 android:textAlignment="center"
@@ -196,7 +204,6 @@
                 android:layout_rowWeight="1"
                 android:background="@drawable/menu_background_dark"
                 android:drawableTop="@drawable/ic_report"
-                android:elevation="5dp"
                 android:padding="15dp"
                 android:text="@string/report_a_case"
                 android:textAlignment="center"
@@ -218,7 +225,6 @@
                 android:layout_rowWeight="1"
                 android:background="@drawable/menu_background"
                 android:drawableTop="@drawable/ic_symptoms"
-                android:elevation="5dp"
                 android:padding="15dp"
                 android:text="@string/virus_symptoms"
                 android:textAlignment="center"
@@ -239,7 +245,6 @@
                 android:layout_rowWeight="1"
                 android:background="@drawable/menu_background"
                 android:drawableTop="@drawable/ic_precautions"
-                android:elevation="5dp"
                 android:padding="15dp"
                 android:text="@string/precautions"
                 android:textAlignment="center"
@@ -260,7 +265,6 @@
                 android:layout_rowWeight="1"
                 android:background="@drawable/menu_background"
                 android:drawableTop="@drawable/ic_news"
-                android:elevation="5dp"
                 android:padding="15dp"
                 android:text="@string/news_update"
                 android:textAlignment="center"
@@ -281,7 +285,6 @@
                 android:layout_rowWeight="1"
                 android:background="@drawable/menu_background"
                 android:drawableTop="@drawable/ic_location"
-                android:elevation="5dp"
                 android:padding="15dp"
                 android:text="@string/movement_history"
                 android:textAlignment="center"

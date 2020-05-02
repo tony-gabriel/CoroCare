@@ -20,7 +20,7 @@ public class SelfTest extends AppCompatActivity {
 
 
     LinearLayout starter_layout;
-    TextView test_main, test_counter, textDescription, Instruction;
+    TextView test_main, test_counter, textDescription, Instruction, textTitle;
     RadioGroup radioGroup;
     RadioButton rbYes, rbNo;
     Button startCheck, btnNextFinish;
@@ -45,6 +45,7 @@ public class SelfTest extends AppCompatActivity {
         test_counter = findViewById(R.id.test_count);
         Instruction = findViewById(R.id.textView1);
         textDescription = findViewById(R.id.textDescription);
+        textTitle = findViewById(R.id.textViewSF);
 
         radioGroup = findViewById(R.id.radio_group);
         rbYes = findViewById(R.id.radioButtonYes);
@@ -260,7 +261,8 @@ public class SelfTest extends AppCompatActivity {
 
     private void Positive() {
 
-        Instruction.setText(getString(R.string.text_result));
+        Instruction.setVisibility(View.GONE);
+        textTitle.setText(getString(R.string.text_result));
         textDescription.setTextColor(getColor(R.color.resultTextColor));
         textDescription.setText(getString(R.string.text_result_positive));
 
@@ -278,7 +280,8 @@ public class SelfTest extends AppCompatActivity {
 
     private void Negative() {
 
-        Instruction.setText(getString(R.string.text_result));
+        Instruction.setVisibility(View.GONE);
+        textTitle.setText(getString(R.string.text_result));
         textDescription.setTextColor(getColor(R.color.resultTextColor));
         textDescription.setText(getString(R.string.text_result_negative));
 
@@ -294,8 +297,6 @@ public class SelfTest extends AppCompatActivity {
 
 
     public void back(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
         finish();
     }
 }

@@ -52,8 +52,6 @@ public class LocationHistory extends FragmentActivity implements OnMapReadyCallb
     }
 
     public void back(View view) {
-        Intent intents= new Intent(LocationHistory.this, MainActivity.class );
-        startActivity(intents);
         finish();
     }
 }

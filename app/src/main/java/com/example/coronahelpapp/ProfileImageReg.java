@@ -64,6 +64,7 @@ public class ProfileImageReg extends AppCompatActivity {
         saveProfile = findViewById(R.id.saveImage);
 
 
+
         getImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -15,9 +15,6 @@ public class Precaution extends AppCompatActivity {
     }
 
     public void imageBack(View view) {
-
-        Intent intent=new Intent (Precaution.this, MainActivity.class);
-        startActivity(intent);
         finish();
     }
 }

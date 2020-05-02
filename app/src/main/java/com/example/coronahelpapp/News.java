@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -24,7 +23,6 @@ public class News extends AppCompatActivity {
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.launchUrl(this, Uri.parse(url));
 
-        
 
     }
 }

@@ -79,14 +79,16 @@
     </string>
 
     <string name="text_result_positive">
-        "You have possible symptoms of COVID-19.
+        "You have possible symptoms of COVID-19 or may have been exposed.
 
-        Please press the button below to contact the National Center for Disease Control (NCDC) nearest to you, while observing the standard guideline for self-isolation for the safety of people around you.
+        Please press the button below to contact the National Center for Disease Control (NCDC) nearest to you to be tested.
+        Please observe the standard guideline for self-isolation for the safety of people around you.
 
     </string>
     <string name="text_result">RESULT</string>
     <string name="btn_text_finish">FINISH</string>
     <string name="btn_text_report">REPORT</string>
+    <string name="how_old_are_you">How old are you?</string>
 
 
 </resources>

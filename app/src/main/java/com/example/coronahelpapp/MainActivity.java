@@ -1,25 +1,37 @@
 package com.example.coronahelpapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,13 +52,19 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
     public String url = "https://corona.lmao.ninja/v2/countries/NGA";
     Button Test, Report, Symptoms, Precautions, News, Movement;
     ImageView profileImage;
-    TextView profileName, status, CoronaData, CoronaActive, CoronaRecovered, CoronaCritical;
+    TextView profileName, status, CoronaData, CoronaActive, CoronaRecovered, CoronaCritical, cordi;
     DatabaseReference mDataBase;
     FirebaseUser firebaseUser;
     String uid;
@@ -54,16 +72,28 @@ public class MainActivity extends AppCompatActivity {
 
     LocationManager locationManager;
     LocationListener locationListener;
-    Location userLocation;
+    LatLng latLng;
+    LocationRequest locationRequest;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     private final long Min_Time = 10000;
     private final long Min_Dist = 10;
+
+    static MainActivity instance;
+
+    public static MainActivity getInstance() {
+
+        return instance;
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        instance = this;
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDataBase = FirebaseDatabase.getInstance().getReference().child("Users");
         uid = firebaseUser.getUid();
@@ -90,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         Precautions = findViewById(R.id.button_precautions);
         News = findViewById(R.id.button_news);
         Movement = findViewById(R.id.button_movement);
+
+        cordi = findViewById(R.id.cord);
 
         MovementHistory();
 
@@ -140,8 +172,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
+
 
     void run() throws IOException {
 
@@ -220,57 +252,66 @@ public class MainActivity extends AppCompatActivity {
 
     private void MovementHistory() {
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
-                    PackageManager.PERMISSION_GRANTED);
-        }
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
 
+                        updateLocation();
 
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+                    }
 
-        try {
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
 
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Min_Time, Min_Dist, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Min_Time, Min_Dist, locationListener);
+                        Toast.makeText(MainActivity.this, "You must allow location permission for app to work properly",
+                                Toast.LENGTH_LONG).show();
 
-        } catch (Exception e) {
+                    }
 
-            e.printStackTrace();
-        }
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
 
-
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-
-                userLocation = location;
-
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-                // TODO: Get the Latitude and Longitude and send to database
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
+                    }
+                }).check();
 
     }
+
+    private void updateLocation() {
+        buildLocationRequest();
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, getPendingIntent());
+    }
+
+    private PendingIntent getPendingIntent() {
+
+        Intent intent = new Intent(this, MyLocationService.class);
+        intent.setAction(MyLocationService.ACTION_PROCESS_UPDATE);
+        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void buildLocationRequest() {
+
+        locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(1000);
+        locationRequest.setFastestInterval(500);
+        locationRequest.setSmallestDisplacement(10f);
+    }
+
+    public void showLocationUpdate(final String value) {
+
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cordi.setText(value);
+
+                Toast.makeText(MainActivity.this, value, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 }
