@@ -52,7 +52,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-//    https://github.com/fabcira/neverEndingAndroidService this is the sample sticky service you can use.
+//    https://github.com/fabcira/neverEndingProcessAndroid7- this is the sample sticky service you can use.
 
 public class MainActivity extends AppCompatActivity {
     public String url = "https://corona.lmao.ninja/v2/countries/NGA";

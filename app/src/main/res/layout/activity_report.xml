@@ -28,7 +28,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_back"
-        android:focusable="true" />
+        android:focusable="true"
+        android:padding="5dp" />
 
     <TextView
         android:id="@+id/textViewSF"
@@ -99,9 +100,9 @@
                 android:layout_marginBottom="30dp"
                 android:backgroundTint="@color/btnFillDark"
                 android:clickable="true"
-                app:fabCustomSize="150dp"
+                app:fabCustomSize="130dp"
                 app:fabSize="normal"
-                app:maxImageSize="80dp"
+                app:maxImageSize="60dp"
                 app:srcCompat="@drawable/ic_phone2"
                 android:focusable="true" />
         </LinearLayout>

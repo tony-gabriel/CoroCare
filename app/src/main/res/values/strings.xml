@@ -67,7 +67,7 @@
         Why? You have a higher chance of catching COVID-19 in one of these areas.
 
     </string>
-    <string name="report_string">Please select your state and a number below to reach NCDC office nearest to you</string>
+    <string name="report_string">Please select your state and a number below to reach NCDC emergency centre in your State</string>
     <string name="test_count">Check: 1/x</string>
     <string name="rd_text_yes">Yes</string>
     <string name="rd_text_no">No</string>
@@ -81,7 +81,7 @@
     <string name="text_result_positive">
         "You have possible symptoms of COVID-19 or may have been exposed.
 
-        Please press the button below to contact the National Center for Disease Control (NCDC) nearest to you to be tested.
+        Please press the button below to contact the National Center for Disease Control (NCDC) emergency centre in your State to be tested.
         Please observe the standard guideline for self-isolation for the safety of people around you.
 
     </string>
