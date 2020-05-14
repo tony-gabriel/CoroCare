@@ -10,7 +10,7 @@ public class User {
     public User() {
     }
 
-    public User(String username, String phone, String userAge, String gender, String health_Status, String ImageUri, LatLng location) {
+    public User(String username, String phone, String userAge, String gender, String health_Status, String ImageUri, LatLng userLocation) {
 
         this.User_Name = username;
         this.User_phone = phone;
@@ -18,6 +18,6 @@ public class User {
         this.User_gender = gender;
         this.Health_Status = health_Status;
         this.ImageUri = ImageUri;
-        this.user_location = location;
+        this.user_location = userLocation;
     }
 }

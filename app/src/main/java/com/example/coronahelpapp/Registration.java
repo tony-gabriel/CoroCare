@@ -1,28 +1,24 @@
 package com.example.coronahelpapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -54,7 +50,7 @@ public class Registration extends AppCompatActivity {
 
     public String userId, Gender;
 
-    LatLng latLng;
+    LatLng userLocation;
 
     FirebaseAuth mAuth;
 
@@ -150,7 +146,7 @@ public class Registration extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
 
-                            User user = new User(username, mobileNumber, userAge, Gender, health_Status, ImageUri, latLng);
+                            User user = new User(username, mobileNumber, userAge, Gender, health_Status, ImageUri, userLocation);
 
                             FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance()
                                     .getCurrentUser())).getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -191,7 +187,7 @@ public class Registration extends AppCompatActivity {
 
             private void Gotoprofile() {
 
-                Intent intent = new Intent(Registration.this, ProfileImageReg.class);
+                Intent intent = new Intent(getApplicationContext(), ProfileImageReg.class);
                 startActivity(intent);
                 finish();
 
@@ -224,8 +220,30 @@ public class Registration extends AppCompatActivity {
 
                             int latestLocationIndex = locationResult.getLocations().size() - 1;
 
-                            latLng = new LatLng(locationResult.getLocations().get(latestLocationIndex).getLatitude(),
+                            userLocation = new LatLng(locationResult.getLocations().get(latestLocationIndex).getLatitude(),
                                     locationResult.getLocations().get(latestLocationIndex).getLongitude());
+
+                            if (userLocation != null) {
+
+                                String mLat = String.valueOf(locationResult.getLocations().get(latestLocationIndex).getLatitude());
+                                String mLong = String.valueOf(locationResult.getLocations().get(latestLocationIndex).getLongitude());
+
+                                if (!mLat.isEmpty() && !mLong.isEmpty()) {
+
+                                    SharedPreferences prefs = getSharedPreferences("userHome", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = prefs.edit();
+                                    editor.putString("Latitude", mLat);
+                                    editor.putString("Longitude", mLong);
+                                    editor.apply();
+                                } else {
+                                    Toast.makeText(Registration.this, "shared preferences not saved", Toast.LENGTH_SHORT).show();
+                                }
+
+                                Toast.makeText(Registration.this, "Location confirmed", Toast.LENGTH_SHORT).show();
+                            } else {
+
+                                Toast.makeText(Registration.this, "Location not confirmed", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 }, Looper.getMainLooper());

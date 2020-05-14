@@ -1,36 +1,28 @@
 package com.example.coronahelpapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Build;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,19 +31,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-import com.google.android.gms.maps.model.LatLng;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -59,6 +38,21 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+
+//    https://github.com/fabcira/neverEndingAndroidService this is the sample sticky service you can use.
 
 public class MainActivity extends AppCompatActivity {
     public String url = "https://corona.lmao.ninja/v2/countries/NGA";
@@ -68,16 +62,17 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference mDataBase;
     FirebaseUser firebaseUser;
     String uid;
-    public String User_Status;
+    public String User_Status, dateMarker;
 
-    LocationManager locationManager;
-    LocationListener locationListener;
-    LatLng latLng;
+    Location currentLocation;
     LocationRequest locationRequest;
     FusedLocationProviderClient fusedLocationProviderClient;
 
-    private final long Min_Time = 10000;
-    private final long Min_Dist = 10;
+    Double startLat, startLong, currentLat, currentLong, startLatsp, startLongsp;
+
+    TestDbHelper myDb;
+    long now;
+
 
     static MainActivity instance;
 
@@ -93,10 +88,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         instance = this;
+        myDb = new TestDbHelper(this);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDataBase = FirebaseDatabase.getInstance().getReference().child("Users");
         uid = firebaseUser.getUid();
+
+        now = System.currentTimeMillis();
 
         try {
             run();
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         cordi = findViewById(R.id.cord);
 
-        MovementHistory();
+        MovementHistory(); // TODO: call through switch button
 
 
         Test.setOnClickListener(new View.OnClickListener() {
@@ -224,11 +222,17 @@ public class MainActivity extends AppCompatActivity {
                 String User_Status = dataSnapshot.child(uid).child("Health_Status").getValue(String.class);
                 String User_pics = dataSnapshot.child(uid).child("ImageUri").getValue(String.class);
 
+                // TODO: get these values through shared preferences from registration activity.
+                startLat = (double) dataSnapshot.child(uid).child("user_location").child("latitude").getValue();
+                startLong = (double) dataSnapshot.child(uid).child("user_location").child("longitude").getValue();
+
+
                 profileName.setText("Hello " + User_name);
                 status.setText(User_Status);
                 Picasso.get().load(User_pics).error(R.drawable.bg).into(profileImage, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
+
 
                     }
 
@@ -276,6 +280,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).check();
 
+
+//            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+//            alertDialog.setTitle("Home location is empty");
+//            alertDialog.setMessage("Please click on OK to set your current location as Home. ");
+//            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int which) {
+//
+//                    Toast.makeText(getApplicationContext(), "You clicked on OK", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//            alertDialog.show();
+
+
+
     }
 
     private void updateLocation() {
@@ -297,21 +315,85 @@ public class MainActivity extends AppCompatActivity {
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(500);
-        locationRequest.setSmallestDisplacement(10f);
+        locationRequest.setFastestInterval(1000);
     }
 
-    public void showLocationUpdate(final String value) {
+    public void showLocationUpdate(final String value, final Location loc) {
 
         MainActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 cordi.setText(value);
 
-                Toast.makeText(MainActivity.this, value, Toast.LENGTH_SHORT).show();
+                currentLocation = loc;
+
+                currentLat = currentLocation.getLatitude();
+                currentLong = currentLocation.getLongitude();
+
+                calculateDistance();
             }
         });
     }
 
+    public void calculateDistance() {
+
+        String startlat = String.valueOf(startLat);
+        String startlong = String.valueOf(startLong);
+
+        SharedPreferences result = getSharedPreferences("userHome", Context.MODE_PRIVATE);
+
+        startLatsp = Double.parseDouble(result.getString("Latitude", startlat));
+        startLongsp = Double.parseDouble(result.getString("longitude", startlong));
+
+        Location startPoint = new Location("userHomeLocation");
+        startPoint.setLatitude(startLatsp);
+        startPoint.setLongitude(startLongsp);
+
+        Location endPoint = new Location(currentLocation);
+        endPoint.setLatitude(currentLat);
+        endPoint.setLongitude(currentLong);
+
+        double distance = startPoint.distanceTo(endPoint);
+
+        int distanceRd = (int) Math.round(distance);
+
+
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd MMM");
+        dateMarker = formatter.format(now);
+
+
+        if (distanceRd >= 10) {
+
+//            myDb.insertLocation(currentLat, currentLong, dateMarker);
+            Toast.makeText(MainActivity.this, "You are " + distanceRd + " meters away from home.", Toast.LENGTH_SHORT).show();
+
+            Notify();
+
+        }
+
+
+    }
+
+    private void Notify() {
+
+        int nortificationId = 0;
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(2)
+                .setContentTitle("Safety Reminder")
+                .setContentText("Please remember to wash or sanitize your hands regularly.")
+                .setAutoCancel(true)
+                .setDefaults(NotificationCompat.DEFAULT_ALL);
+
+        Uri path = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES .0){
+//
+//        }
+
+
+    }
 
 }

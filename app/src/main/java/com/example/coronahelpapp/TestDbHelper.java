@@ -8,14 +8,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.example.coronahelpapp.DataContract.DataTable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.coronahelpapp.TestContract.*;
+import static com.example.coronahelpapp.LocationContract.LocationTable;
+import static com.example.coronahelpapp.TestContract.QuestionsTable;
 
 public class TestDbHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "SelfCheck.db";
+    private static final String DATABASE_NAME = "Corocare.db";
     private static final int DATABASE_VERSION = 1;
 
     private SQLiteDatabase db;
@@ -28,6 +31,28 @@ public class TestDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         this.db = db;
+
+        final String SQL_CREATE_LOCATIONS_TABLE = "CREATE TABLE " +
+                LocationTable.TABLE_NAME + " ( " +
+                LocationTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                LocationTable.COLUMN_LATITUDE + " REAL, " +
+                LocationTable.COLUMN_LONGITUDE + " REAL, " +
+                LocationTable.COLUMN_MARKER_TITLE + " VARCHAR " + ")";
+
+        db.execSQL(SQL_CREATE_LOCATIONS_TABLE);
+
+
+        final String SQL_CREATE_DATA_TABLE = "CREATE TABLE " +
+                DataTable.TABLE_NAME + " ( " +
+                DataTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DataTable.COLUMN_TOTAL_CASE + " INTEGER, " +
+                DataTable.COLUMN_ACTIVE_CASE + " INTEGER, " +
+                DataTable.COLUMN_TOTAL_RECOVERY + " INTEGER, " +
+                DataTable.COLUMN_TOTAL_DEATH + " INTEGER " + ")";
+
+        db.execSQL(SQL_CREATE_DATA_TABLE);
+
+
 
         final String SQL_CREATE_QUESTIONS_TABLE = "CREATE TABLE " +
                 QuestionsTable.TABLE_NAME + " ( " +
@@ -50,6 +75,8 @@ public class TestDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS " + QuestionsTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + LocationTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DataTable.TABLE_NAME);
         onCreate(db);
 
     }
@@ -59,13 +86,13 @@ public class TestDbHelper extends SQLiteOpenHelper {
         addQuestion(q1);
         Question q2 = new Question("Are you having a runny nose, sore throat or diarrhea?", "Yes", "No", 1, 2);
         addQuestion(q2);
-        Question q3 = new Question("Are you experiencing severe difficulty in breathing?", "Yes", "No", 1, 2);
+        Question q3 = new Question("Are you experiencing difficulty in breathing?", "Yes", "No", 1, 2);
         addQuestion(q3);
         Question q4 = new Question("Are you experiencing shortness of breath?", "Yes", "No", 1, 2);
         addQuestion(q4);
         Question q5 = new Question("Can you hold your breath for 10seconds without coughing or feeling severe discomfort?", "Yes", "No", 1, 2);
         addQuestion(q5);
-        Question q6 = new Question("Have you traveled out of Nigeria to any of the countries with high case index of COVID-19 recently?", "Yes", "No", 1, 2);
+        Question q6 = new Question("Have you traveled out of Nigeria to any of the countries/ states within Nigeria, with high case index of COVID-19 recently?", "Yes", "No", 1, 2);
         addQuestion(q6);
         Question q7 = new Question("Have you been in contact with someone with respiratory illness in the past 14 days?", "Yes", "No", 1, 2);
         addQuestion(q7);
@@ -108,4 +135,33 @@ public class TestDbHelper extends SQLiteOpenHelper {
         c.close();
         return questionList;
     }
+
+    public void insertLocation(Double lat, Double lng, String marker) {
+
+        db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(LocationTable.COLUMN_LATITUDE, lat);
+        cv.put(LocationTable.COLUMN_LONGITUDE, lng);
+        cv.put(LocationTable.COLUMN_MARKER_TITLE, marker);
+
+        db.insert(LocationTable.TABLE_NAME, null, cv);
+
+    }
+
+
+    //TODO: call this method to save values from Api.
+    public void insertData(int total, int active, int recovery, int death) {
+
+        db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(DataTable.COLUMN_TOTAL_CASE, total);
+        cv.put(DataTable.COLUMN_ACTIVE_CASE, active);
+        cv.put(DataTable.COLUMN_TOTAL_RECOVERY, recovery);
+        cv.put(DataTable.COLUMN_TOTAL_DEATH, death);
+
+        db.insert(DataTable.TABLE_NAME, null, cv);
+    }
+
 }
