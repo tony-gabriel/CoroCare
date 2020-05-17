@@ -26,7 +26,8 @@
         android:onClick="goBack"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back" />
+        app:srcCompat="@drawable/ic_back"
+        android:padding="10dp" />
 
     <TextView
         android:id="@+id/textViewSF"

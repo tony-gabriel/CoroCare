@@ -8,13 +8,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.coronahelpapp.DataContract.DataTable;
+import com.example.coronahelpapp.Constants.DataContract.DataTable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.coronahelpapp.LocationContract.LocationTable;
-import static com.example.coronahelpapp.TestContract.QuestionsTable;
+import static com.example.coronahelpapp.Constants.LocationContract.LocationTable;
+import static com.example.coronahelpapp.Constants.TestContract.QuestionsTable;
 
 public class TestDbHelper extends SQLiteOpenHelper {
 
@@ -51,7 +51,6 @@ public class TestDbHelper extends SQLiteOpenHelper {
                 DataTable.COLUMN_TOTAL_DEATH + " INTEGER " + ")";
 
         db.execSQL(SQL_CREATE_DATA_TABLE);
-
 
 
         final String SQL_CREATE_QUESTIONS_TABLE = "CREATE TABLE " +
@@ -92,7 +91,7 @@ public class TestDbHelper extends SQLiteOpenHelper {
         addQuestion(q4);
         Question q5 = new Question("Can you hold your breath for 10seconds without coughing or feeling severe discomfort?", "Yes", "No", 1, 2);
         addQuestion(q5);
-        Question q6 = new Question("Have you traveled out of Nigeria to any of the countries/ states within Nigeria, with high case index of COVID-19 recently?", "Yes", "No", 1, 2);
+        Question q6 = new Question("Have you traveled to any of the countries or states within Nigeria, with high case index of COVID-19 recently?", "Yes", "No", 1, 2);
         addQuestion(q6);
         Question q7 = new Question("Have you been in contact with someone with respiratory illness in the past 14 days?", "Yes", "No", 1, 2);
         addQuestion(q7);
@@ -153,7 +152,7 @@ public class TestDbHelper extends SQLiteOpenHelper {
     //TODO: call this method to save values from Api.
     public void insertData(int total, int active, int recovery, int death) {
 
-        db = getWritableDatabase();
+        db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         cv.put(DataTable.COLUMN_TOTAL_CASE, total);
@@ -162,6 +161,123 @@ public class TestDbHelper extends SQLiteOpenHelper {
         cv.put(DataTable.COLUMN_TOTAL_DEATH, death);
 
         db.insert(DataTable.TABLE_NAME, null, cv);
+    }
+
+    public Cursor locationData() {
+
+        db = this.getWritableDatabase();
+
+        Cursor location = db.rawQuery("SELECT * FROM " + LocationTable.TABLE_NAME, null);
+        return location;
+    }
+
+    public ArrayList<String> dateData() {
+
+        db = this.getWritableDatabase();
+        ArrayList<String> dates = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT " + LocationTable.COLUMN_MARKER_TITLE + " FROM " + LocationTable.TABLE_NAME, null);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+
+            dates.add(c.getString(c.getColumnIndex(LocationTable.COLUMN_MARKER_TITLE)));
+        }
+
+        c.close();
+
+        return dates;
+
+    }
+
+
+    public ArrayList<Integer> totalCaseData() {
+
+        db = this.getWritableDatabase();
+        ArrayList<Integer> totalCase = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT " + DataTable.COLUMN_TOTAL_CASE + " FROM " + DataTable.TABLE_NAME, null);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+
+            totalCase.add(c.getInt(c.getColumnIndex(DataTable.COLUMN_TOTAL_CASE)));
+        }
+
+        c.close();
+
+        return totalCase;
+
+    }
+
+    public ArrayList<Integer> activeCaseData() {
+
+        db = this.getWritableDatabase();
+        ArrayList<Integer> activeCase = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT " + DataTable.COLUMN_ACTIVE_CASE + " FROM " + DataTable.TABLE_NAME, null);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+
+            activeCase.add(c.getInt(c.getColumnIndex(DataTable.COLUMN_ACTIVE_CASE)));
+        }
+
+        c.close();
+
+        return activeCase;
+
+    }
+
+    public ArrayList<Integer> recoveryData() {
+
+        db = this.getWritableDatabase();
+        ArrayList<Integer> recovered = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT " + DataTable.COLUMN_TOTAL_RECOVERY + " FROM " + DataTable.TABLE_NAME, null);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+
+            recovered.add(c.getInt(c.getColumnIndex(DataTable.COLUMN_TOTAL_RECOVERY)));
+        }
+
+        c.close();
+
+        return recovered;
+
+    }
+
+    public ArrayList<Integer> totalDeathData() {
+
+        db = this.getWritableDatabase();
+        ArrayList<Integer> deaths = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT " + DataTable.COLUMN_TOTAL_DEATH + " FROM " + DataTable.TABLE_NAME, null);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+
+            deaths.add(c.getInt(c.getColumnIndex(DataTable.COLUMN_TOTAL_DEATH)));
+        }
+
+        c.close();
+
+        return deaths;
+
+    }
+
+    public ArrayList<Integer> queryXData() {
+
+        db = this.getWritableDatabase();
+        ArrayList<Integer> xData = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT " + DataTable._ID + " FROM " + DataTable.TABLE_NAME, null);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+
+            xData.add(c.getInt(c.getColumnIndex(DataTable._ID)));
+        }
+
+        c.close();
+
+        return xData;
+
     }
 
 }

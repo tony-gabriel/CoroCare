@@ -7,13 +7,17 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.location.Location;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import com.example.coronahelpapp.Constants.LocationContract.LocationTable;
+import com.github.mikephil.charting.charts.BarChart;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -39,6 +45,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,9 +63,12 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     public String url = "https://corona.lmao.ninja/v2/countries/NGA";
+
     Button Test, Report, Symptoms, Precautions, News, Movement;
-    ImageView profileImage;
-    TextView profileName, status, CoronaData, CoronaActive, CoronaRecovered, CoronaCritical, cordi;
+    ImageView profileImage, optionIcon;
+    TextView profileName, status, CoronaData, CoronaActive, CoronaRecovered, CoronaCritical;
+    BarChart barChart;
+
     DatabaseReference mDataBase;
     FirebaseUser firebaseUser;
     String uid;
@@ -71,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     Double startLat, startLong, currentLat, currentLong, startLatsp, startLongsp;
 
     TestDbHelper myDb;
-    long now;
+    long date;
 
 
     static MainActivity instance;
@@ -94,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         mDataBase = FirebaseDatabase.getInstance().getReference().child("Users");
         uid = firebaseUser.getUid();
 
-        now = System.currentTimeMillis();
+        date = System.currentTimeMillis();
 
         try {
             run();
@@ -108,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
         CoronaRecovered = findViewById(R.id.CoronaRecovered);
         CoronaCritical = findViewById(R.id.CoronaCritical);
         profileImage = findViewById(R.id.profile_image);
+        optionIcon = findViewById(R.id.option);
+
+        barChart = findViewById(R.id.bar_chart);
 
         profileName = findViewById(R.id.profile_name);
         status = findViewById(R.id.health_status);
@@ -119,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         News = findViewById(R.id.button_news);
         Movement = findViewById(R.id.button_movement);
 
-        cordi = findViewById(R.id.cord);
 
         MovementHistory(); // TODO: call through switch button
 
@@ -170,6 +182,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        optionIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PopupMenu popup = new PopupMenu(MainActivity.this, optionIcon);
+                popup.getMenuInflater().inflate(R.menu.option_menu, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        switch (item.getItemId()) {
+
+                            case R.id.about:
+                                Toast.makeText(MainActivity.this, "create about activity ", Toast.LENGTH_SHORT).show();
+
+                                break;
+
+                            case R.id.developers:
+                                Toast.makeText(MainActivity.this, "create developer activity ", Toast.LENGTH_SHORT).show();
+
+                                break;
+
+                        }
+
+
+                        return true;
+                    }
+                });
+
+                popup.show();
+            }
+        });
+
     }
 
 
@@ -200,9 +246,9 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(myResponse);
                             CoronaData.setText("Total Cases: " + jsonObject.getString("cases"));
-                            CoronaActive.setText("Active Cases: " + jsonObject.getString("active"));
-                            CoronaCritical.setText("Total Deaths:  " + jsonObject.getString("deaths"));
-                            CoronaRecovered.setText(" Total Recovered  : " + jsonObject.getString("recovered"));
+                            CoronaActive.setText("Active: " + jsonObject.getString("active"));
+                            CoronaCritical.setText("Deaths:  " + jsonObject.getString("deaths"));
+                            CoronaRecovered.setText("Recovered  : " + jsonObject.getString("recovered"));
 
 
                         } catch (JSONException e) {
@@ -293,10 +339,11 @@ public class MainActivity extends AppCompatActivity {
 //            alertDialog.show();
 
 
-
     }
 
     private void updateLocation() {
+
+        //TODO: check for gps on
         buildLocationRequest();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -318,12 +365,11 @@ public class MainActivity extends AppCompatActivity {
         locationRequest.setFastestInterval(1000);
     }
 
-    public void showLocationUpdate(final String value, final Location loc) {
+    public void showLocationUpdate(final Location loc) {
 
         MainActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                cordi.setText(value);
 
                 currentLocation = loc;
 
@@ -359,15 +405,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd MMM");
-        dateMarker = formatter.format(now);
+        dateMarker = formatter.format(date);
 
 
         if (distanceRd >= 10) {
 
-//            myDb.insertLocation(currentLat, currentLong, dateMarker);
-            Toast.makeText(MainActivity.this, "You are " + distanceRd + " meters away from home.", Toast.LENGTH_SHORT).show();
-
+            myDb.insertLocation(currentLat, currentLong, dateMarker);
+            myDb.close();
             Notify();
+
+            ExportLocation(); //TODO: reactivate
 
         }
 
@@ -393,6 +440,48 @@ public class MainActivity extends AppCompatActivity {
 //
 //        }
 
+
+    }
+
+    //TODO: Call this method every 2weeks
+    private void ExportLocation() {
+        Cursor data = myDb.locationData();
+        JSONArray LocationJson = new JSONArray();
+        int numRows = data.getCount();
+
+        if (numRows == 0) {
+
+            Toast.makeText(MainActivity.this, "Location Table empty", Toast.LENGTH_SHORT).show();
+        } else {
+
+            int i = 0;
+            while (data.moveToNext() && !data.isAfterLast()) {
+
+                Double latitude = data.getDouble(data.getColumnIndex(LocationTable.COLUMN_LATITUDE));
+                Double longitude = data.getDouble(data.getColumnIndex(LocationTable.COLUMN_LONGITUDE));
+                String marker = data.getString(data.getColumnIndex(LocationTable.COLUMN_MARKER_TITLE));
+
+                try {
+                    JSONObject object = new JSONObject();
+                    object.put("id", i + 1);
+                    object.put("latitude", latitude);
+                    object.put("longitude", longitude);
+                    object.put("marker", marker);
+                    LocationJson.put(object);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                    Toast.makeText(MainActivity.this, "J-object fail", Toast.LENGTH_SHORT).show();
+                }
+
+
+                i++;
+            }
+
+            //TODO: Save 'LocationJson' to firebase
+            Log.i("Location: ", LocationJson.toString());
+        }
 
     }
 

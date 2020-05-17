@@ -1,9 +1,6 @@
 package com.example.coronahelpapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +10,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
@@ -282,7 +281,6 @@ public class SelfTest extends AppCompatActivity {
 
         Instruction.setVisibility(View.GONE);
         textTitle.setText(getString(R.string.text_result));
-        textDescription.setTextColor(getColor(R.color.resultTextColor));
         textDescription.setText(getString(R.string.text_result_negative));
 
         startCheck.setText(getString(R.string.btn_text_finish));

@@ -22,10 +22,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:clickable="true"
             android:id="@+id/option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="10dp"
             android:padding="10dp"
             android:src="@drawable/ic_option"
@@ -104,67 +105,77 @@
             app:layout_constraintTop_toBottomOf="@id/profile_container">
 
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginTop="20dp">
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/bar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:layout_margin="10dp" />
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/resultTextColor"
+                    android:layout_below="@id/bar_chart"
+                    android:layout_marginTop="10dp" />
 
                 <TextView
                     android:id="@+id/CoronaData"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="35dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginBottom="10dp"
                     android:fontFamily="@font/poppins"
                     android:text="Total Cases: "
-                    android:textSize="20sp" />
+                    android:textSize="13sp"
+                    android:layout_below="@id/view2" />
 
 
                 <TextView
                     android:id="@+id/CoronaActive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_alignParentStart="true"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="80dp"
                     android:fontFamily="@font/poppins"
-                    android:text="Active Case: "
+                    android:text="Active: "
                     android:textColor="@android:color/holo_blue_dark"
-                    android:textSize="20sp" />
+                    android:textSize="13sp"
+                    android:layout_alignParentBottom="true" />
 
 
                 <TextView
                     android:id="@+id/CoronaRecovered"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="120dp"
+                    android:layout_below="@id/view2"
+                    android:layout_marginStart="73dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toEndOf="@+id/CoronaData"
                     android:fontFamily="@font/poppins"
-                    android:text="Total Recovered: "
+                    android:text="Recovered: "
                     android:textColor="@android:color/holo_green_dark"
-                    android:textSize="20sp" />
-
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/CoronaCritical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="160dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="110dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_toEndOf="@+id/CoronaActive"
                     android:fontFamily="@font/poppins"
-                    android:text="Total Deaths:"
+                    android:text="Deaths:"
                     android:textColor="@android:color/holo_red_dark"
-                    android:textSize="20sp" />
+                    android:textSize="13sp" />
 
-                <TextView
-                    android:id="@+id/cord"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/location_history" />
 
             </RelativeLayout>
 

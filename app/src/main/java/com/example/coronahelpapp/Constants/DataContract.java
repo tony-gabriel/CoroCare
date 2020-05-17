@@ -1,4 +1,4 @@
-package com.example.coronahelpapp;
+package com.example.coronahelpapp.Constants;
 
 import android.provider.BaseColumns;
 

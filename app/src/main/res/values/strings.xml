@@ -89,6 +89,7 @@
     <string name="btn_text_finish">FINISH</string>
     <string name="btn_text_report">REPORT</string>
     <string name="how_old_are_you">How old are you?</string>
+    <string name="menu_about">About</string>
 
 
 </resources>

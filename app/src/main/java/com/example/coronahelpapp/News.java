@@ -1,11 +1,12 @@
 package com.example.coronahelpapp;
 
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
-
-import android.net.Uri;
-import android.os.Bundle;
 
 public class News extends AppCompatActivity {
 
@@ -24,5 +25,9 @@ public class News extends AppCompatActivity {
         customTabsIntent.launchUrl(this, Uri.parse(url));
 
 
+    }
+
+    public void imageBack(View view) {
+        finish();
     }
 }

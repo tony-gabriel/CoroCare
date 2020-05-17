@@ -43,14 +43,9 @@ public class MyLocationService extends BroadcastReceiver {
                 if (result != null) {
 
                     location = result.getLastLocation();
-                    String location_string = new StringBuilder("" + location.getLatitude())
-                            .append("/")
-                            .append(location.getLongitude())
-                            .toString();
-
 
                     try {
-                        MainActivity.getInstance().showLocationUpdate(location_string, location);
+                        MainActivity.getInstance().showLocationUpdate(location);
 
                     } catch (Exception ex) {
 

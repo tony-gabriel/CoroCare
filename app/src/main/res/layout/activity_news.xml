@@ -23,10 +23,11 @@
         android:layout_marginStart="35dp"
         android:layout_marginTop="20dp"
         android:contentDescription="@string/app_name"
+        android:onClick="imageBack"
+        android:padding="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back"
-        android:padding="5dp" />
+        app:srcCompat="@drawable/ic_back" />
 
     <TextView
         android:id="@+id/textViewSF"
