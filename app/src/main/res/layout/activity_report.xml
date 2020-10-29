@@ -9,7 +9,7 @@
     <View
         android:id="@+id/view"
         android:layout_width="0dp"
-        android:layout_height="185dp"
+        android:layout_height="285dp"
         android:background="@color/viewColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -18,20 +18,21 @@
 
     <ImageView
         android:id="@+id/imageBack"
-        android:clickable="true"
-        android:onClick="back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
         android:contentDescription="@string/app_name"
+        android:focusable="true"
+        android:onClick="back"
+        android:padding="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back"
-        android:focusable="true" />
+        app:srcCompat="@drawable/ic_back" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewSF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
@@ -47,21 +48,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="150dp" />
+        app:layout_constraintGuide_end="510dp" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="581dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/cornered_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline">
+        app:layout_constraintTop_toBottomOf="@id/textViewSF"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -72,7 +75,7 @@
                 android:padding="5dp"
                 android:text="@string/report_string"
                 android:textAlignment="center"
-                android:textAppearance="@style/menu_text_main"/>
+                android:textAppearance="@style/menu_text_main" />
 
             <Spinner
                 android:id="@+id/spinner_main"
@@ -99,11 +102,11 @@
                 android:layout_marginBottom="30dp"
                 android:backgroundTint="@color/btnFillDark"
                 android:clickable="true"
-                app:fabCustomSize="150dp"
+                android:focusable="true"
+                app:fabCustomSize="115dp"
                 app:fabSize="normal"
-                app:maxImageSize="80dp"
-                app:srcCompat="@drawable/ic_phone2"
-                android:focusable="true" />
+                app:maxImageSize="60dp"
+                app:srcCompat="@drawable/ic_phone2" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
