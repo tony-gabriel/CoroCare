@@ -1,9 +1,13 @@
 package com.example.coronahelpapp;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -13,7 +17,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.coronahelpapp.Constructors.Question;
+import com.example.coronahelpapp.Database.TestDbHelper;
+
 import java.util.List;
+
+import static com.example.coronahelpapp.R.color.colorAccent;
+import static com.example.coronahelpapp.R.color.viewColor;
 
 public class SelfTest extends AppCompatActivity {
 
@@ -37,12 +47,16 @@ public class SelfTest extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_self_test);
 
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.viewColor));
+
 
         starter_layout = findViewById(R.id.linear_starter);
 
         test_main = findViewById(R.id.text_check);
         test_counter = findViewById(R.id.test_count);
-        Instruction = findViewById(R.id.textView1);
         textDescription = findViewById(R.id.textDescription);
         textTitle = findViewById(R.id.textViewSF);
 
@@ -59,11 +73,26 @@ public class SelfTest extends AppCompatActivity {
 
         ShowNextQuestion();
 
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, //disabled
+                        new int[]{android.R.attr.state_checked} //enabled
+                },
+                new int[]{
+                        Color.DKGRAY, //disabled
+                        viewColor //enabled
+                }
+        );
+
+        rbNo.setButtonTintList(colorStateList);
+        rbYes.setButtonTintList(colorStateList);
+
+
         startCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                starter_layout.setVisibility(View.INVISIBLE);
+                starter_layout.setVisibility(View.GONE);
                 test_main.setVisibility(View.VISIBLE);
                 radioGroup.setVisibility(View.VISIBLE);
                 btnNextFinish.setVisibility(View.VISIBLE);
@@ -113,36 +142,6 @@ public class SelfTest extends AppCompatActivity {
         }
     }
 
-    private void FinishTest() {
-        test_main.setVisibility(View.INVISIBLE);
-        radioGroup.setVisibility(View.INVISIBLE);
-        btnNextFinish.setVisibility(View.INVISIBLE);
-        test_counter.setVisibility(View.INVISIBLE);
-        starter_layout.setVisibility(View.VISIBLE);
-
-
-        if (q1 && q2 && q3 && q4 && !q5) {
-
-            Positive();
-        } else if (q1 && q6) {
-
-            Positive();
-        } else if (q1 == true && q3 == true && q6 == true) {
-
-            Positive();
-        } else if (q1 && q2 && !q5) {
-
-            Positive();
-        } else if (q8) {
-
-            Positive();
-        } else {
-
-            Negative();
-        }
-
-    }
-
     private void CheckAnswer() {
         answered = true;
 
@@ -152,6 +151,14 @@ public class SelfTest extends AppCompatActivity {
         String dbQuestion = currentQuestion.getQuestion();
         String AnswerNrText;
         String QandA;
+        StringBuilder testSummary = new StringBuilder();
+        StringBuilder testSummary1 = new StringBuilder();
+        StringBuilder testSummary2 = new StringBuilder();
+        StringBuilder testSummary3 = new StringBuilder();
+        StringBuilder testSummary4 = new StringBuilder();
+        StringBuilder testSummary5 = new StringBuilder();
+        StringBuilder testSummary6 = new StringBuilder();
+        StringBuilder testSummary7 = new StringBuilder();
 
         if (AnswerNr == 1) {
 
@@ -173,8 +180,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
-
-                Log.i("Result", QandA);
+                testSummary1.append("(1) ").append(QandA);
                 break;
 
             case 2:
@@ -185,7 +191,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
-                Log.i("Result", QandA);
+                testSummary2.append(testSummary1).append("\n").append("(2) ").append(QandA);
                 break;
 
             case 3:
@@ -196,7 +202,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
-                Log.i("Result", QandA);
+                testSummary3.append(testSummary2).append("\n").append("(3) ").append(QandA);
                 break;
 
             case 4:
@@ -207,7 +213,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
-                Log.i("Result", QandA);
+                testSummary4.append(testSummary3).append("\n").append("(4) ").append(QandA);
                 break;
 
             case 5:
@@ -218,7 +224,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
-                Log.i("Result", QandA);
+                testSummary5.append(testSummary4).append("\n").append("(5) ").append(QandA);
                 break;
 
             case 6:
@@ -229,7 +235,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
-                Log.i("Result", QandA);
+                testSummary6.append(testSummary5).append("\n").append("(6) ").append(QandA);
                 break;
 
             case 7:
@@ -240,7 +246,7 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
-                Log.i("Result", QandA);
+                testSummary7.append(testSummary6).append("\n").append("(7) " + QandA);
                 break;
 
             case 8:
@@ -251,22 +257,72 @@ public class SelfTest extends AppCompatActivity {
                 }
 
                 QandA = dbQuestion + "  Answer: " + AnswerNrText;
-                Log.i("Result", QandA);
+                testSummary7.append(testSummary6).append("\n").append("(7) " + QandA);
                 break;
         }
+        testSummary.append("Test Summary").append("\n").append(testSummary7);
+        Log.i("Summary :", String.valueOf(testSummary));
+    }
 
+    private void FinishTest() {
+        test_main.setVisibility(View.INVISIBLE);
+        radioGroup.setVisibility(View.INVISIBLE);
+        btnNextFinish.setVisibility(View.INVISIBLE);
+        test_counter.setVisibility(View.INVISIBLE);
+        starter_layout.setVisibility(View.VISIBLE);
+
+
+        if (q1 && q2 && q3 && !q4 && q5) {
+
+            Positive();
+        } else if (q1 && q2 && q3 && q5) {
+
+            Positive();
+        } else if (q1 && q2 && q5) {
+
+            Positive();
+        } else if (q1 && q5) {
+
+            Positive();
+        } else if (q2 && q3 && q5) {
+
+            Positive();
+        } else if (q1 && q2 && q3) {
+
+            Positive();
+        } else if (q1 && q2 && q3 && q5 && q6) {
+
+            Positive();
+        } else if (q1 && q3 && q6) {
+
+            Positive();
+        } else if (q1 && q2 && !q4) {
+
+            Positive();
+        } else if (q1 && q3) {
+
+            Positive();
+        } else if (q2 && q3 && q6) {
+
+            Positive();
+        } else if (q8) {
+
+            Positive();
+        } else {
+
+            Negative();
+        }
 
     }
 
     private void Positive() {
 
-        Instruction.setVisibility(View.GONE);
+        // Instruction.setVisibility(View.GONE);
         textTitle.setText(getString(R.string.text_result));
-        textDescription.setTextColor(getColor(R.color.resultTextColor));
         textDescription.setText(getString(R.string.text_result_positive));
 
         startCheck.setText(getString(R.string.btn_text_report));
-        startCheck.setBackgroundColor(getColor(R.color.colorAccent));
+        startCheck.setBackgroundColor(getColor(colorAccent));
         startCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,7 +335,7 @@ public class SelfTest extends AppCompatActivity {
 
     private void Negative() {
 
-        Instruction.setVisibility(View.GONE);
+        //  Instruction.setVisibility(View.GONE);
         textTitle.setText(getString(R.string.text_result));
         textDescription.setText(getString(R.string.text_result_negative));
 

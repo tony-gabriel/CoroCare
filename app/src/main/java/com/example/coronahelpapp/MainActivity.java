@@ -1,20 +1,20 @@
 package com.example.coronahelpapp;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.NotificationManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.location.Location;
-import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -23,13 +23,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
-import com.example.coronahelpapp.Constants.LocationContract.LocationTable;
-import com.github.mikephil.charting.charts.BarChart;
+import com.example.coronahelpapp.Database.TestDbHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,20 +41,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -63,25 +62,27 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     public String url = "https://corona.lmao.ninja/v2/countries/NGA";
+    String url2 = "https://covid19.ncdc.gov.ng/";
 
-    Button Test, Report, Symptoms, Precautions, News, Movement;
-    ImageView profileImage, optionIcon;
-    TextView profileName, status, CoronaData, CoronaActive, CoronaRecovered, CoronaCritical;
-    BarChart barChart;
+    Button Test, Report, Symptoms, Precautions;
+    ImageView profileImage, optionIcon, ImgErr;
+    TextView profileName, CoronaData, CoronaActive, CoronaRecovered, CoronaCritical, Samples;
+    ConstraintLayout profile;
 
     DatabaseReference mDataBase;
     FirebaseUser firebaseUser;
-    String uid;
-    public String User_Status, dateMarker;
+    String uid, User_pics;
+    public String dateMarker;
 
     Location currentLocation;
     LocationRequest locationRequest;
     FusedLocationProviderClient fusedLocationProviderClient;
 
-    Double startLat, startLong, currentLat, currentLong, startLatsp, startLongsp;
+    Double currentLat, currentLong, startLatsp, startLongsp;
 
     TestDbHelper myDb;
     long date;
+    SharedPreferences prefs;
 
 
     static MainActivity instance;
@@ -96,6 +97,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.viewColor));
+
+        prefs = getApplicationContext().getSharedPreferences("userHome", MODE_PRIVATE);
+        startLatsp = Double.parseDouble(prefs.getString("Latitude", "0.0"));
+        startLongsp = Double.parseDouble(prefs.getString("Longitude", "0.0"));
+
 
         instance = this;
         myDb = new TestDbHelper(this);
@@ -112,28 +123,38 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+//        CheckLocation();
+
 
         CoronaData = findViewById(R.id.CoronaData);
+        Samples = findViewById(R.id.samples);
         CoronaActive = findViewById(R.id.CoronaActive);
         CoronaRecovered = findViewById(R.id.CoronaRecovered);
         CoronaCritical = findViewById(R.id.CoronaCritical);
         profileImage = findViewById(R.id.profile_image);
         optionIcon = findViewById(R.id.option);
-
-        barChart = findViewById(R.id.bar_chart);
+        ImgErr = findViewById(R.id.imgErr);
 
         profileName = findViewById(R.id.profile_name);
-        status = findViewById(R.id.health_status);
+        profile = findViewById(R.id.profile_container);
 
         Test = findViewById(R.id.button_test);
         Report = findViewById(R.id.button_report);
         Symptoms = findViewById(R.id.button_symptoms);
         Precautions = findViewById(R.id.button_precautions);
-        News = findViewById(R.id.button_news);
-        Movement = findViewById(R.id.button_movement);
+
+        if (!CheckInternet()) {
+
+            ImgErr.setVisibility(View.VISIBLE);
+            Picasso.get()
+                    .load(R.drawable.ic_no_wifi)
+                    .into(ImgErr);
+        } else {
+            ImgErr.setVisibility(View.GONE);
+        }
 
 
-        MovementHistory(); // TODO: call through switch button
+//        MovementHistory();
 
 
         Test.setOnClickListener(new View.OnClickListener() {
@@ -166,22 +187,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        News.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, News.class));
-
-            }
-        });
-
-        Movement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, LocationHistory.class));
-
-            }
-        });
-
         optionIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,22 +197,36 @@ public class MainActivity extends AppCompatActivity {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-
                         switch (item.getItemId()) {
 
                             case R.id.about:
-                                Toast.makeText(MainActivity.this, "create about activity ", Toast.LENGTH_SHORT).show();
-
+                                startActivity(new Intent(MainActivity.this, About.class));
                                 break;
 
-                            case R.id.developers:
-                                Toast.makeText(MainActivity.this, "create developer activity ", Toast.LENGTH_SHORT).show();
+                            case R.id.remove:
 
+                                final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                                alert.setTitle("Delete your Record");
+                                alert.setMessage("This action cannot be undone.");
+                                alert.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        RemoveUser();
+                                    }
+                                });
+                                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                alert.show();
                                 break;
 
+                            case R.id.visit:
+                                Visit();
+                                break;
                         }
-
-
                         return true;
                     }
                 });
@@ -216,7 +235,77 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (User_pics.equals("")) {
+                    startActivity(new Intent(MainActivity.this, ProfileImageReg.class));
+                    Toast.makeText(MainActivity.this, "Please complete registration", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(new Intent(MainActivity.this, ProfileView.class));
+                }
+            }
+        });
+
     }
+
+    private void Visit() {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setToolbarColor(ContextCompat.getColor(MainActivity.this, R.color.viewColor));
+        builder.addDefaultShareMenuItem().setShowTitle(true).build();
+
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url2));
+    }
+
+    private void RemoveUser() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Removing your medical record");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(User_pics);
+        storageReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    firebaseUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            if (task.isSuccessful()) {
+                                startActivity(new Intent(MainActivity.this, Registration.class));
+                                finish();
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Snackbar snackbar = Snackbar.make(findViewById(R.id.mainVi), e.getMessage(), Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                        }
+                    });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.mainVi), e.getMessage(), Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+        });
+
+    }
+
+//    private void CheckLocation() {
+//        if (startLatsp == 0.0 && startLongsp == 0.0) {
+//            GetLocationMsg();
+//        }
+//    }
 
 
     void run() throws IOException {
@@ -238,7 +327,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                 final String myResponse = response.body().string();
-//                Toast.makeText(MainActivity.this, "successful get", Toast.LENGTH_LONG).show();
 
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
@@ -246,9 +334,10 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(myResponse);
                             CoronaData.setText("Total Cases: " + jsonObject.getString("cases"));
-                            CoronaActive.setText("Active: " + jsonObject.getString("active"));
-                            CoronaCritical.setText("Deaths:  " + jsonObject.getString("deaths"));
-                            CoronaRecovered.setText("Recovered  : " + jsonObject.getString("recovered"));
+                            CoronaActive.setText(jsonObject.getString("active"));
+                            CoronaCritical.setText(jsonObject.getString("deaths"));
+                            CoronaRecovered.setText(jsonObject.getString("recovered"));
+                            Samples.setText(jsonObject.getString("tests"));
 
 
                         } catch (JSONException e) {
@@ -264,30 +353,54 @@ public class MainActivity extends AppCompatActivity {
         mDataBase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 String User_name = dataSnapshot.child(uid).child("User_Name").getValue(String.class);
                 String User_Status = dataSnapshot.child(uid).child("Health_Status").getValue(String.class);
-                String User_pics = dataSnapshot.child(uid).child("ImageUri").getValue(String.class);
+                User_pics = dataSnapshot.child(uid).child("ImageUri").getValue(String.class);
 
-                // TODO: get these values through shared preferences from registration activity.
-                startLat = (double) dataSnapshot.child(uid).child("user_location").child("latitude").getValue();
-                startLong = (double) dataSnapshot.child(uid).child("user_location").child("longitude").getValue();
+                if (!CheckInternet()) {
 
+                    ImgErr.setVisibility(View.VISIBLE);
+                    Picasso.get()
+                            .load(R.drawable.ic_no_wifi)
+                            .into(ImgErr);
 
-                profileName.setText("Hello " + User_name);
-                status.setText(User_Status);
-                Picasso.get().load(User_pics).error(R.drawable.bg).into(profileImage, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {
+                    //ToDo: set name and health status from shared preferences
+                }
 
+                ImgErr.setVisibility(View.GONE);
 
-                    }
+                int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
-                    @Override
-                    public void onError(Exception e) {
-                        Toast.makeText(getApplicationContext(), "An error occurred", Toast.LENGTH_SHORT).show();
+                if (hour >= 0 && hour < 12) {
 
-                    }
-                });
+                    profileName.setText("Good Morning, " + "\n" + User_name);
+
+                } else if (hour >= 12 && hour < 16) {
+
+                    profileName.setText("Good Afternoon, " + "\n" + User_name);
+
+                } else if (hour >= 16 && hour < 21) {
+
+                    profileName.setText("Good Evening, " + "\n" + User_name);
+
+                } else if (hour >= 21 && hour < 24) {
+
+                    profileName.setText("Good Night, " + "\n" + User_name);
+                }
+
+                try {
+
+                    Picasso
+                            .get()
+                            .load(User_pics)
+                            .error(R.drawable.img_profile)
+                            .placeholder(R.drawable.img_profile)
+                            .into(profileImage);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
 
             }
@@ -300,189 +413,227 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void MovementHistory() {
-
-        Dexter.withActivity(this)
-                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-
-                        updateLocation();
-
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-
-                        Toast.makeText(MainActivity.this, "You must allow location permission for app to work properly",
-                                Toast.LENGTH_LONG).show();
-
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-
-                    }
-                }).check();
-
-
-//            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-//            alertDialog.setTitle("Home location is empty");
-//            alertDialog.setMessage("Please click on OK to set your current location as Home. ");
-//            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-//                public void onClick(DialogInterface dialog, int which) {
+//    private void MovementHistory() {
 //
-//                    Toast.makeText(getApplicationContext(), "You clicked on OK", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//            alertDialog.show();
+//        Dexter.withActivity(this)
+//                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+//                .withListener(new PermissionListener() {
+//                    @Override
+//                    public void onPermissionGranted(PermissionGrantedResponse response) {
+//                        updateLocation();
+//                    }
+//
+//                    @Override
+//                    public void onPermissionDenied(PermissionDeniedResponse response) {
+//                        Toast.makeText(MainActivity.this, "You must allow location permission for app to work properly",
+//                                Toast.LENGTH_LONG).show();
+//                    }
+//
+//                    @Override
+//                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+//
+//                    }
+//                }).check();
+//    }
 
-
-    }
-
-    private void updateLocation() {
-
-        //TODO: check for gps on
-        buildLocationRequest();
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, getPendingIntent());
-    }
+//    private void updateLocation() {
+//
+//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//
+//        if (!gps) {
+//            showSettingsAlert();
+//        }
+//
+//        buildLocationRequest();
+//
+//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+//        fusedLocationProviderClient.requestLocationUpdates(locationRequest, getPendingIntent());
+//    }
 
     private PendingIntent getPendingIntent() {
-
         Intent intent = new Intent(this, MyLocationService.class);
         intent.setAction(MyLocationService.ACTION_PROCESS_UPDATE);
         return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private void buildLocationRequest() {
+//    private void buildLocationRequest() {
+//        locationRequest = new LocationRequest();
+//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        locationRequest.setInterval(1000);
+//        locationRequest.setFastestInterval(1000);
+//    }
 
-        locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(1000);
-    }
+//    public void showLocationUpdate(final Location loc) {
+//        MainActivity.this.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                currentLocation = loc;
+//                currentLat = currentLocation.getLatitude();
+//                currentLong = currentLocation.getLongitude();
+//
+//                calculateDistance();
+//            }
+//        });
+//    }
 
-    public void showLocationUpdate(final Location loc) {
-
-        MainActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                currentLocation = loc;
-
-                currentLat = currentLocation.getLatitude();
-                currentLong = currentLocation.getLongitude();
-
-                calculateDistance();
-            }
-        });
-    }
-
-    public void calculateDistance() {
-
-        String startlat = String.valueOf(startLat);
-        String startlong = String.valueOf(startLong);
-
-        SharedPreferences result = getSharedPreferences("userHome", Context.MODE_PRIVATE);
-
-        startLatsp = Double.parseDouble(result.getString("Latitude", startlat));
-        startLongsp = Double.parseDouble(result.getString("longitude", startlong));
-
-        Location startPoint = new Location("userHomeLocation");
-        startPoint.setLatitude(startLatsp);
-        startPoint.setLongitude(startLongsp);
-
-        Location endPoint = new Location(currentLocation);
-        endPoint.setLatitude(currentLat);
-        endPoint.setLongitude(currentLong);
-
-        double distance = startPoint.distanceTo(endPoint);
-
-        int distanceRd = (int) Math.round(distance);
-
-
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd MMM");
-        dateMarker = formatter.format(date);
-
-
-        if (distanceRd >= 10) {
-
-            myDb.insertLocation(currentLat, currentLong, dateMarker);
-            myDb.close();
-            Notify();
-
-            ExportLocation(); //TODO: reactivate
-
-        }
-
-
-    }
-
-    private void Notify() {
-
-        int nortificationId = 0;
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(2)
-                .setContentTitle("Safety Reminder")
-                .setContentText("Please remember to wash or sanitize your hands regularly.")
-                .setAutoCancel(true)
-                .setDefaults(NotificationCompat.DEFAULT_ALL);
-
-        Uri path = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES .0){
+//    public void calculateDistance() {
+//        if (startLatsp != 0.0 && startLongsp != 0.0) {
+//            Location startPoint = new Location("userHomeLocation");
+//            startPoint.setLatitude(startLatsp);
+//            startPoint.setLongitude(startLongsp);
+//
+//            Location endPoint = new Location(currentLocation);
+//            endPoint.setLatitude(currentLat);
+//            endPoint.setLongitude(currentLong);
+//
+//            double distance = startPoint.distanceTo(endPoint);
+//            int distanceRd = (int) Math.round(distance);
+//
+////            Toast.makeText(this, "You are " + distanceRd + " meters away from home.", Toast.LENGTH_SHORT).show();
+//
+//            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd MMM");
+//            dateMarker = formatter.format(date);
+//
+//            if (distanceRd >= 1) {
+////                SaveLocation(currentLat, currentLong, dateMarker);
+//                handler.SaveLocation(currentLat, currentLong, dateMarker);
+//            }
 //
 //        }
+//
+//
+//    }
 
+//    private void GetLocationMsg() {
+//        final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+//        alert.setTitle("Home Location not Set");
+//        alert.setMessage("Your home location is not set. Do you want to set your current location as your home location?");
+//
+//        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                GetLocation();
+//            }
+//        });
+//
+//        alert.setNegativeButton("No, Later", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//        alert.show();
+//    }
 
-    }
+//    private void GetLocation() {
+//        final String la = String.valueOf(currentLat);
+//        final String lo = String.valueOf(currentLong);
+//        LatLng location = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+//        if (currentLat != null && currentLong != null) {
+//
+//            SharedPreferences.Editor edit = prefs.edit();
+//            edit.putString("Latitude", la);
+//            edit.putString("Longitude", lo);
+//            edit.apply();
+//
+//            mDataBase.child(uid).child("user_location").setValue(location)
+//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            if (task.isSuccessful()) {
+//
+//                                Toast.makeText(MainActivity.this, "Home location updated.", Toast.LENGTH_SHORT).show();
+//                            } else {
+//                                Toast.makeText(MainActivity.this, "Update failed, try again later.", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+//        }
+//    }
 
-    //TODO: Call this method every 2weeks
-    private void ExportLocation() {
-        Cursor data = myDb.locationData();
-        JSONArray LocationJson = new JSONArray();
-        int numRows = data.getCount();
+//    public void SaveLocation(Double lat, Double lng, String marker) {
+//
+//        boolean insert = myDb.insertLocation(lat, lng, marker);
+//
+//        if (insert) {
+//
+//            ExportLocation1();
+//        }
+//        myDb.close();
+//    }
 
-        if (numRows == 0) {
+//    private void showSettingsAlert() {
+//
+//        final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+//        alert.setTitle("Turn on GPS");
+//        alert.setMessage("GPS is required for app's location services to work. Go to settings menu and enable GPS.");
+//
+//        alert.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                MainActivity.this.startActivity(intent);
+//            }
+//        });
+//
+//        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//        alert.show();
+//    }
 
-            Toast.makeText(MainActivity.this, "Location Table empty", Toast.LENGTH_SHORT).show();
-        } else {
+//    private void ExportLocation1() {
+//        Cursor data = myDb.locationData();
+//        JSONArray LocationJson = new JSONArray();
+//        int numRows = data.getCount();
+//
+//        if (numRows == 0) {
+//            Toast.makeText(MainActivity.this, "Location Table empty", Toast.LENGTH_SHORT).show();
+//        } else {
+//
+//            int i = 0;
+//            while (data.moveToNext()) {
+//
+//                Double latitude = data.getDouble(data.getColumnIndex(LocationTable.COLUMN_LATITUDE));
+//                Double longitude = data.getDouble(data.getColumnIndex(LocationTable.COLUMN_LONGITUDE));
+//                String marker = data.getString(data.getColumnIndex(LocationTable.COLUMN_MARKER_TITLE));
+//
+//                try {
+//                    JSONObject object = new JSONObject();
+//                    object.put("id", i + 1);
+//                    object.put("latitude", latitude);
+//                    object.put("longitude", longitude);
+//                    object.put("marker", marker);
+//                    LocationJson.put(object);
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//
+//                    Toast.makeText(MainActivity.this, "J-object fail", Toast.LENGTH_SHORT).show();
+//                }
+//
+//                i++;
+//            }
+//
+//            data.close();
+//            Log.i("Location: ", LocationJson.toString());
+//        }
+//
+//    }
 
-            int i = 0;
-            while (data.moveToNext() && !data.isAfterLast()) {
+    public boolean CheckInternet() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                Double latitude = data.getDouble(data.getColumnIndex(LocationTable.COLUMN_LATITUDE));
-                Double longitude = data.getDouble(data.getColumnIndex(LocationTable.COLUMN_LONGITUDE));
-                String marker = data.getString(data.getColumnIndex(LocationTable.COLUMN_MARKER_TITLE));
+        if (connectivityManager.getActiveNetworkInfo() != null &&
+                connectivityManager.getActiveNetworkInfo().isAvailable() &&
+                connectivityManager.getActiveNetworkInfo().isConnected()) {
 
-                try {
-                    JSONObject object = new JSONObject();
-                    object.put("id", i + 1);
-                    object.put("latitude", latitude);
-                    object.put("longitude", longitude);
-                    object.put("marker", marker);
-                    LocationJson.put(object);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-
-                    Toast.makeText(MainActivity.this, "J-object fail", Toast.LENGTH_SHORT).show();
-                }
-
-
-                i++;
-            }
-
-            //TODO: Save 'LocationJson' to firebase
-            Log.i("Location: ", LocationJson.toString());
-        }
-
+            return true;
+        } else return false;
     }
 
 }

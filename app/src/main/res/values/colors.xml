@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#D81B1B</color>
 
     <color name="viewColor">#5A7BEF</color>
     <color name="viewColor2">#DC5C7EF5</color>
@@ -10,7 +10,8 @@
     <color name="menuBackColor">#A7B5FF</color>
     <color name="colorFillLight">#FFFFFF</color>
     <color name="btnFillDark">#CF5A7BEF</color>
-    <color name="resultTextColor">#C7C4C4</color>
+    <color name="resultTextColor">#F3F2F2</color>
+    <color name="TextColor">#3F3F3F</color>
 
 
 </resources>

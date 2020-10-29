@@ -1,20 +1,19 @@
 package com.example.coronahelpapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,9 +27,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.makeramen.roundedimageview.RoundedImageView;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 public class ProfileImageReg extends AppCompatActivity {
@@ -44,6 +41,7 @@ public class ProfileImageReg extends AppCompatActivity {
     DatabaseReference mDataBase;
     FirebaseUser user;
     String uid;
+    SharedPreferences picUploaded;
 
     public static final int PICK_IMAGE = 1;
 
@@ -59,10 +57,9 @@ public class ProfileImageReg extends AppCompatActivity {
 
 
         getImage = findViewById(R.id.getImage);
-        profileImage = findViewById(R.id.profile_main);
+        profileImage = findViewById(R.id.profile_main1);
 
         saveProfile = findViewById(R.id.saveImage);
-
 
 
         getImage.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +86,8 @@ public class ProfileImageReg extends AppCompatActivity {
         if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
 
             final StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
@@ -112,6 +111,12 @@ public class ProfileImageReg extends AppCompatActivity {
 
                             progressDialog.dismiss();
                             Toast.makeText(ProfileImageReg.this, "Uploaded", Toast.LENGTH_SHORT).show();
+
+                            picUploaded = getApplicationContext().getSharedPreferences("pic_upload", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = picUploaded.edit();
+                            editor.putBoolean("boolean", true);
+                            editor.apply();
+
                             Intent intents = new Intent(ProfileImageReg.this, MainActivity.class);
                             startActivity(intents);
                             finish();
@@ -122,6 +127,7 @@ public class ProfileImageReg extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
+
                             Toast.makeText(ProfileImageReg.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -133,6 +139,8 @@ public class ProfileImageReg extends AppCompatActivity {
                             progressDialog.setMessage("Uploaded " + (int) progress + "%");
                         }
                     });
+        } else {
+            Toast.makeText(ProfileImageReg.this, "Choose a Profile picture. ", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -140,18 +148,14 @@ public class ProfileImageReg extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
-
             filePath = data.getData();
-
-            {
-                filePath = data.getData();
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                    profileImage.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                profileImage.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         }
     }
 }

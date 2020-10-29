@@ -1,19 +1,20 @@
 <resources>
-    <string name="app_name">Corona Help App</string>
+    <string name="app_name">CoroCare</string>
     <string name="description">profile image</string>
     <string name="status">Status:</string>
     <string name="menuDescription">menu image</string>
     <string name="self_test">Self Check</string>
     <string name="report_a_case">Report a case</string>
-    <string name="virus_symptoms">Virus Symptoms</string>
+    <string name="virus_symptoms">Symptoms</string>
     <string name="precautions">Precautions</string>
     <string name="news_update">News Update</string>
     <string name="movement_history">Movement History</string>
     <string name="instructions">Instructions</string>
 
     <string name="text_sample">
-        Excepteur sint officia fugiat laboris voluptate pariatur. Ex voluptate cupidatat
-        est laborum et non commodo. Officia fugiat nisi consequat occaecat eu.
+       "NOTE: \nIf you are sick and not sure if you need to take a COVID'19 test, this is a tool to help.\n The result from this check is not a substitute for professional medical advice, diagnosis or treatment.
+        If you think you have/may have a medical emergency, immediately call your doctor or the National Centre for Disease Control (NCDC) emergency line of your state.
+
 </string>
     <string name="start_test">Start Check</string>
     <string name="title_activity_location_history">Map</string>
@@ -27,7 +28,7 @@
     <string name="female">Female</string>
     <string name="text_continue">Continue</string>
     <string name="not_home">No maybe later</string>
-    <string name="are_you_at_home">Are you at home?</string>
+    <string name="are_you_at_home">Use your current location as your home location?</string>
     <string name="upload_a_profile_picture">Upload a profile picture</string>
     <string name="coro">Coro</string>
     <string name="news">News</string>
@@ -75,7 +76,7 @@
         "You do not need to take a COVID-19 test.
 
         Please contact your doctor for medical attention if you are experiencing any of the previously listed symptoms.
-        Remember to wash your hands and maintain social distancing.
+        Remember to wash your hands regularly and maintain social distancing.
     </string>
 
     <string name="text_result_positive">
@@ -91,5 +92,40 @@
     <string name="how_old_are_you">How old are you?</string>
     <string name="menu_about">About</string>
 
+    <string name="sym1">
+        "COVID-19 affects different people in different ways. Most infected people will develop mild to moderate illness and recover without hospitalization.</string>
+
+    <string name="symp_H">
+        "Most common symptoms:
+    </string>
+
+    <string name="sym2">
+         " * fever \n * dry cough \n * tiredness
+    </string>
+
+    <string name="symp_H2">
+        Less common symptoms:
+    </string>
+
+    <string name="sym3">
+        " * aches and pains \n * sore throat \n * diarrhoea \n * conjunctivitis \n * headache \n * loss of taste or smell \n * a rash on skin, or discolouration of fingers or toes
+    </string>
+
+    <string name="symp_H3">
+        Serious symptoms:
+    </string>
+
+    <string name="sym4">
+        " * difficulty breathing or shortness of breath \n * chest pain or pressure \n * loss of speech or movement
+    </string>
+
+    <string name="symp_H4">
+        "Seek immediate medical attention if you have serious symptoms. Always call before visiting your doctor or health facility.
+
+People with mild symptoms who are otherwise healthy should manage their symptoms at home.
+
+On average it takes 5–6 days from when someone is infected with the virus for symptoms to show, however it can take up to 14 days.
+    </string>
+    <string name="contact_us">"This app was developed by Storm Technologies.   \n\n Contact us: stormtechnologies0@gmail.com, 07067455268 </string>
 
 </resources>

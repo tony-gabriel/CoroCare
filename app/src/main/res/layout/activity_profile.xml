@@ -69,7 +69,7 @@
 
 
             <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/profile_main"
+                android:id="@+id/profile_main1"
                 android:layout_width="160dp"
                 android:layout_height="160dp"
                 android:layout_below="@+id/text8"
@@ -89,7 +89,7 @@
                 android:layout_marginStart="-38dp"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/ic_camera"
-                android:layout_toEndOf="@id/profile_main"
+                android:layout_toEndOf="@id/profile_main1"
                 app:riv_oval="true"
                 android:clickable="true"/>
 
@@ -98,7 +98,7 @@
                 android:id="@+id/saveImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/profile_main"
+                android:layout_below="@id/profile_main1"
                 android:layout_marginTop="36dp"
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="45dp"

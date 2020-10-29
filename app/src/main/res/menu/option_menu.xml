@@ -6,7 +6,11 @@
         android:title="@string/menu_about" />
 
     <item
-        android:id="@+id/developers"
-        android:title="Developer" />
+        android:id="@+id/visit"
+        android:title="More information" />
+
+    <item
+        android:id="@+id/remove"
+        android:title="Remove my record" />
 
 </menu>
